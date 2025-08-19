@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Pembayaran Pesanan - Museum Listrik</title>
+    <link rel="icon" href="/mleb_foto/MLEB-logo.png">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#0D5C66', // Dark Teal
+                        accent: '#00AFC1',  // Bright Cyan
+                        'error-red': '#EF4444', // Tailwind's red-500
+                    }
+                }
+            }
+        }
+    </script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <style>
+        /* Gaya kustom dari halaman login */
+        .navbar-gradient {
+            background: linear-gradient(to right, #00AFC1, #0D5C66);
+        }
+
+        .line {
+            width: 25px;
+            height: 3px;
+            background-color: white;
+            margin: 4px 0;
+            transition: all 0.3s ease;
+        }
+
+        #navbar-toggler.open .line-1 {
+            transform: rotate(-45deg) translate(-5px, 6px);
+        }
+
+        #navbar-toggler.open .line-2 {
+            opacity: 0;
+        }
+
+        #navbar-toggler.open .line-3 {
+            transform: rotate(45deg) translate(-5px, -6px);
+        }
+
+        #navbarNav {
+            display: none;
+        }
+
+        @media (min-width: 768px) {
+            #navbarNav {
+                display: flex !important;
+            }
+        }
+
+        #navbarNav.open {
+            display: flex;
+        }
+
+        .hover-effect:hover {
+            color: #fcd34d;
+            transition: color 0.3s ease;
+        }
+
+        /* Gaya kustom dari halaman pembayaran */
+        body {
+            background-color: #f0f2f5;
+            font-family: 'Helvetica Neue', sans-serif;
+        }
+
+        .booking-summary-card,
+        .payment-method-card {
+            background-color: #ffffff;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            border-radius: 1rem;
+        }
+
+        .radio-option:checked+label {
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.5);
+            background-color: #f6faff;
+        }
+
+        .radio-option:checked+label .checkmark {
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        .checkmark {
+            transform: scale(0);
+            transition: transform 0.2s ease-in-out, opacity 0.2s ease-in-out;
+        }
+
+        .progress-bar-fill {
+            transition: width 0.5s ease-in-out;
+        }
+    </style>
+</head>
+
+<body class="bg-gray-100 font-sans flex flex-col min-h-screen">
+    <div class="bg-[#035B71] text-white py-2 shadow-md">
+        <div class="container mx-auto px-4 flex flex-col sm:flex-row justify-between items-center gap-2">
+            <div class="flex items-center gap-2">
+                <i class="fas fa-globe text-white"></i>
+                <small class="text-white">museumlistrikpln.com | (+62) 812-3456-7890</small>
+            </div>
+            <div class="flex gap-4">
+                <a href="mailto:museumlistrikpln@gmail.com" class="text-white text-lg hover-effect"
+                    aria-label="Email Museum Listrik"><i class="fas fa-envelope"></i></a>
+                <a href="https://wa.me/6281234567890" target="_blank" class="text-white text-lg hover-effect"
+                    aria-label="WhatsApp Museum Listrik"><i class="fab fa-whatsapp"></i></a>
+                <a href="tel:+6281234567890" class="text-white text-lg hover-effect"
+                    aria-label="Telepon Museum Listrik"><i class="fas fa-phone"></i></a>
+                <a href="https://instagram.com/museumlistrik" target="_blank" class="text-white text-lg hover-effect"
+                    aria-label="Instagram Museum Listrik"><i class="fab fa-instagram"></i></a>
+                <a href="https://www.tiktok.com/@museumlistrikpln" target="_blank"
+                    class="text-white text-lg hover-effect" aria-label="TikTok Museum Listrik"><i
+                        class="fab fa-tiktok"></i></a>
+                <a href="https://www.youtube.com/@MuseumListrikPLN" target="_blank"
+                    class="text-white text-lg hover-effect" aria-label="YouTube Museum Listrik"><i
+                        class="fab fa-youtube"></i></a>
+            </div>
+        </div>
+    </div>
+
+    <nav class="sticky top-0 z-50 shadow-lg navbar-gradient">
+        <div class="container mx-auto px-0.5 py-0.5 flex items-center justify-between">
+            <a href="/companyprofile.html" class="flex items-center gap-2 text-white font-bold text-xl">
+                <img src="/mleb_foto/MLEB-logo.png" alt="Logo Museum Listrik dan Energi Baru Terbarukan"
+                    class="w-24 h-auto">
+            </a>
+
+            <button
+                class="md:hidden p-2 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-white"
+                id="navbar-toggler" aria-controls="mobile-nav-menu" aria-expanded="false"
+                aria-label="Toggle navigation">
+                <span class="line line-1 block"></span>
+                <span class="line line-2 block"></span>
+                <span class="line line-3 block"></span>
+            </button>
+
+            <div class="hidden md:flex flex-col md:flex-row md:items-center md:flex-1 w-full md:w-auto mt-4 md:mt-0"
+                id="navbarNav">
+                <ul class="flex flex-col md:flex-row md:ml-8 gap-3 md:gap-6 w-full md:w-auto">
+                    <li class="relative group">
+                        <a href="#"
+                            class="block py-2 px-3 text-white font-medium hover:text-yellow-300 transition duration-500">
+                            Beranda
+                        </a>
+                        <ul
+                            class="absolute bg-white text-gray-900 rounded-md shadow-lg py-2 mt-1 z-10 w-48 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 transform scale-95 group-hover:scale-100 origin-top-right">
+                            <li><a href="/index.html"
+                                    class="block py-2 px-4 hover:bg-gray-200 transition duration-200">HOME</a></li>
+                            <li><a href="/companyprofile.html"
+                                    class="block py-2 px-4 hover:bg-gray-200 transition duration-200">Tentang Kami</a>
+                            </li>
+                        </ul>
+                    </li>
+                    <li><a href="#news"
+                            class="block py-2 px-3 text-white font-medium hover:text-yellow-300 transition duration-500">News</a>
+                    </li>
+                    <li><a href="#events"
+                            class="block py-2 px-3 text-white font-medium hover:text-yellow-300 transition duration-500">Event</a>
+                    </li>
+                    <li><a href="/catalog.html"
+                            class="block py-2 px-3 text-white font-medium hover:text-yellow-300 transition duration-500">Katalog</a>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="flex flex-col md:flex-row items-center gap-4 md:gap-6 ml-auto mt-4 md:mt-0 w-full md:w-auto">
+                <form class="flex w-full md:w-auto navbar-search-form" role="search">
+                    <input
+                        class="search-input py-2 px-4 rounded-full mr-2 outline-none focus:ring-2 focus:ring-white focus:border-transparent w-full md:w-48"
+                        type="search" placeholder="Cari..." aria-label="Search">
+                    <button
+                        class="bg-white text-[#0D5C66] px-4 py-2 rounded-full font-semibold hover:bg-gray-200 transition duration-200 flex-shrink-0"
+                        type="submit">Cari</button>
+                </form>
+
+                <div class="relative group">
+                    <button
+                        class="flex items-center gap-2 text-white font-medium px-3 py-2 rounded-md hover:bg-white/10 transition duration-200"
+                        type="button" aria-expanded="false" aria-haspopup="true">
+                        <i class="fas fa-user-circle text-xl"></i> Profil
+                    </button>
+                    <ul
+                        class="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-10 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 transform scale-95 group-hover:scale-100 origin-top-right">
+                        <li><a class="block px-4 py-2 text-gray-800 hover:bg-gray-100"
+                                href="/dashboardUser.html">Dashboard</a></li>
+                        <li><a class="block px-4 py-2 text-gray-800 hover:bg-gray-100" href="/login.html">Login</a></li>
+                        <li>
+                            <hr class="border-t border-gray-200 my-1">
+                        </li>
+                        <li><a class="block px-4 py-2 text-red-600 hover:bg-gray-100" href="#">Keluar</a></li>
+                    </ul>
+                </div>
+
+                <a href="https://web.pln.co.id/" target="_blank"
+                    class="flex items-center gap-2 text-white font-medium px-3 py-2 rounded-md hover:bg-white/10 transition duration-200">
+                    <img src="/mleb_foto/logo-pln-removebg-preview.png" alt="Logo PLN" class="w-20 h-auto">
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="flex-grow container mx-auto p-4 md:p-8 max-w-6xl">
+        <div class="flex items-center mb-8">
+            <h1 class="text-3xl font-bold text-gray-800">Selesaikan Pembayaran</h1>
+        </div>
+
+        <div class="w-full bg-gray-200 rounded-full h-2.5 my-8">
+            <div id="progress-bar" class="bg-blue-500 h-2.5 rounded-full progress-bar-fill" style="width: 66%;"></div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <div class="lg:col-span-2 space-y-8">
+                <div class="booking-summary-card p-6">
+                    <h2 class="text-xl font-bold text-gray-800 mb-4 border-b pb-2">Detail Pesanan</h2>
+                    <div id="booking-details-content" class="text-gray-700">
+                        <p class="text-center text-gray-400">Memuat data pesanan...</p>
+                    </div>
+                </div>
+
+                <div class="booking-summary-card p-6">
+                    <h2 class="text-xl font-bold text-gray-800 mb-4 border-b pb-2">Ringkasan Harga</h2>
+                    <div class="space-y-3 text-gray-700">
+                        <div class="flex justify-between">
+                            <span>Harga per jam/orang</span>
+                            <span id="base-price">Rp 0</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span>Biaya layanan</span>
+                            <span id="service-fee">Rp 0</span>
+                        </div>
+                        <div
+                            class="flex justify-between font-bold text-lg mt-4 pt-4 border-t border-dashed border-gray-300">
+                            <span>Total Pembayaran</span>
+                            <span class="text-red-500 text-2xl" id="total-price">Rp 0</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="lg:col-span-1 space-y-6">
+                <div class="payment-method-card p-6">
+                    <h2 class="text-xl font-bold text-gray-800 mb-4 border-b pb-2">Pilih Metode Pembayaran</h2>
+                    <div id="payment-options-container" class="space-y-4">
+                    </div>
+                </div>
+
+                <div id="payment-details-container" class="payment-method-card p-6 hidden">
+                </div>
+
+                <button type="button" id="pay-now-btn"
+                    class="w-full py-4 bg-blue-500 text-white font-bold rounded-lg transition-all duration-300 hover:bg-blue-600 focus:outline-none focus:ring-4 focus:ring-blue-500 focus:ring-opacity-50 opacity-50 cursor-not-allowed"
+                    disabled>
+                    Pilih Metode Pembayaran
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const navbarToggler = document.getElementById('navbar-toggler');
+        const navbarNav = document.getElementById('navbarNav');
+
+        // Toggle mobile navbar
+        navbarToggler.addEventListener('click', () => {
+            const isExpanded = navbarToggler.getAttribute('aria-expanded') === 'true';
+            navbarToggler.setAttribute('aria-expanded', !isExpanded);
+            navbarToggler.classList.toggle('open');
+            navbarNav.classList.toggle('hidden');
+            navbarNav.classList.toggle('flex');
+        });
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const bookingData = JSON.parse(localStorage.getItem('currentBookingDetails'));
+            const payNowBtn = document.getElementById('pay-now-btn');
+            const bookingDetailsContent = document.getElementById('booking-details-content');
+            const basePriceEl = document.getElementById('base-price');
+            const serviceFeeEl = document.getElementById('service-fee');
+            const totalPriceEl = document.getElementById('total-price');
+            const paymentOptionsContainer = document.getElementById('payment-options-container');
+            const paymentDetailsContainer = document.getElementById('payment-details-container');
+            const progressBar = document.getElementById('progress-bar');
+
+            const paymentMethods = [
+                { id: 'bank_transfer', name: 'Transfer Bank', icon: 'fas fa-university', color: 'text-blue-500', description: 'ATM Bersama, BCA, Mandiri, BNI, dll.' },
+                { id: 'e_wallet', name: 'Dompet Digital', icon: 'fas fa-wallet', color: 'text-purple-500', description: 'GoPay, OVO, ShopeePay, DANA, dll.' },
+                { id: 'credit_card', name: 'Kartu Kredit', icon: 'fas fa-credit-card', color: 'text-red-500', description: 'Visa, Mastercard, JCB, dll.' }
+            ];
+
+            function renderBookingDetails(data) {
+                if (!data) {
+                    bookingDetailsContent.innerHTML = `<p class="text-center text-red-500 font-semibold mt-4">Maaf, data pesanan tidak ditemukan.</p>`;
+                    return;
+                }
+
+                const subtotal = data.price * data.guests;
+                const serviceFee = subtotal * 0.05;
+                const total = subtotal + serviceFee;
+
+                bookingDetailsContent.innerHTML = `
+                    <div class="flex items-start mb-4">
+                        <img src="${data.image}" alt="${data.name}" class="w-24 h-24 object-cover rounded-lg mr-4">
+                        <div>
+                            <h3 class="text-xl font-bold text-gray-900">${data.name}</h3>
+                            <p class="text-sm text-gray-500">${data.description}</p>
+                            <p class="text-sm font-semibold text-gray-600 mt-2">${data.guests} Tamu</p>
+                        </div>
+                    </div>
+                    <div class="space-y-2 text-sm">
+                        <div class="flex justify-between">
+                            <span class="text-gray-500">Check-in</span>
+                            <span class="font-semibold">${new Date(data.checkin).toLocaleString('id-ID')}</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-gray-500">Check-out</span>
+                            <span class="font-semibold">${new Date(data.checkout).toLocaleString('id-ID')}</span>
+                        </div>
+                    </div>
+                `;
+                basePriceEl.textContent = `Rp ${subtotal.toLocaleString('id-ID')}`;
+                serviceFeeEl.textContent = `Rp ${serviceFee.toLocaleString('id-ID')}`;
+                totalPriceEl.textContent = `Rp ${total.toLocaleString('id-ID')}`;
+            }
+
+            function renderPaymentOptions() {
+                paymentOptionsContainer.innerHTML = paymentMethods.map(method => `
+                    <div>
+                        <input type="radio" id="${method.id}" name="payment_method" value="${method.id}" class="hidden radio-option">
+                        <label for="${method.id}" class="flex items-center p-4 border-2 border-gray-200 rounded-lg cursor-pointer transition-all duration-200 hover:bg-blue-50 hover:border-blue-300">
+                            <div class="flex-grow">
+                                <span class="font-semibold text-gray-800">${method.name}</span>
+                                <p class="text-sm text-gray-500">${method.description}</p>
+                            </div>
+                            <i class="${method.icon} text-2xl ${method.color}"></i>
+                            <div class="checkmark h-5 w-5 ml-4 rounded-full border-2 border-blue-500 bg-blue-500 flex items-center justify-center opacity-0">
+                                <i class="fas fa-check text-white text-xs"></i>
+                            </div>
+                        </label>
+                    </div>
+                `).join('');
+            }
+
+            function renderPaymentDetails(methodId) {
+                let html = '';
+                if (methodId === 'bank_transfer') {
+                    html = `
+                        <h4 class="font-bold text-lg mb-2">Transfer Bank</h4>
+                        <div class="p-4 bg-gray-100 rounded-lg space-y-2">
+                            <p class="font-bold text-gray-800">Bank Central Asia (BCA)</p>
+                            <p class="text-sm text-gray-700">No. Rekening: <span class="font-mono font-bold">123-456-7890</span></p>
+                            <p class="text-sm text-gray-700">Atas Nama: PT. Museum Listrik dan Energi Baru</p>
+                        </div>
+                         <h4 class="font-bold text-lg mb-2">Transfer Bank</h4>
+                        <div class="p-4 bg-gray-100 rounded-lg space-y-2">
+                            <p class="font-bold text-gray-800">Bank Negara Indonesia (BNI)</p>
+                            <p class="text-sm text-gray-700">No. Rekening: <span class="font-mono font-bold">123-456-7890</span></p>
+                            <p class="text-sm text-gray-700">Atas Nama: PT. Museum Listrik dan Energi Baru</p>
+                        </div>
+                         <h4 class="font-bold text-lg mb-2">Transfer Bank</h4>
+                        <div class="p-4 bg-gray-100 rounded-lg space-y-2">
+                            <p class="font-bold text-gray-800">Bank Mandiri (Mandiri)</p>
+                            <p class="text-sm text-gray-700">No. Rekening: <span class="font-mono font-bold">123-456-7890</span></p>
+                            <p class="text-sm text-gray-700">Atas Nama: PT. Museum Listrik dan Energi Baru</p>
+                        </div>
+                    `;
+
+                } else if (methodId === 'e_wallet') {
+                    html = `
+                        <h4 class="font-bold text-lg mb-2">Dompet Digital</h4>
+                        <p class="text-sm text-gray-600">Scan QR Code di bawah untuk melakukan pembayaran.</p>
+                        <div class="text-center mt-4 p-4 bg-gray-100 rounded-lg">
+                            <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=Pembayaran_via_E-wallet" alt="QR Code Pembayaran" class="mx-auto border rounded-lg">
+                        </div>
+                    `;
+                } else if (methodId === 'credit_card') {
+                    html = `
+                        <h4 class="font-bold text-lg mb-2">Info Kartu Kredit</h4>
+                        <div class="space-y-4">
+                            <div>
+                                <label for="card-number" class="text-sm font-semibold text-gray-700">Nomor Kartu</label>
+                                <input type="text" id="card-number" class="w-full mt-1 p-2 border rounded-lg focus:ring focus:ring-blue-200" placeholder="0000 0000 0000 0000">
+                            </div>
+                            <div class="flex gap-4">
+                                <div>
+                                    <label for="expiry-date" class="text-sm font-semibold text-gray-700">Tanggal Kadaluarsa</label>
+                                    <input type="text" id="expiry-date" class="w-full mt-1 p-2 border rounded-lg focus:ring focus:ring-blue-200" placeholder="MM/YY">
+                                </div>
+                                <div>
+                                    <label for="cvv" class="text-sm font-semibold text-gray-700">CVV</label>
+                                    <input type="text" id="cvv" class="w-full mt-1 p-2 border rounded-lg focus:ring focus:ring-blue-200" placeholder="123">
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                }
+                paymentDetailsContainer.innerHTML = html;
+                paymentDetailsContainer.classList.remove('hidden');
+            }
+
+            if (bookingData) {
+                renderBookingDetails(bookingData);
+                renderPaymentOptions();
+
+                // Listen for changes in payment method selection
+                paymentOptionsContainer.addEventListener('change', (e) => {
+                    if (e.target.matches('.radio-option')) {
+                        renderPaymentDetails(e.target.value);
+                        // Enable and update the button once a method is chosen
+                        payNowBtn.disabled = false;
+                        payNowBtn.classList.remove('opacity-50', 'cursor-not-allowed');
+                        payNowBtn.textContent = 'Bayar Sekarang';
+
+                        // Scroll to the button on mobile for better UX
+                        if (window.innerWidth < 1024) {
+                            payNowBtn.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                        }
+                    }
+                });
+
+            } else {
+                renderBookingDetails(null);
+                payNowBtn.disabled = true;
+                payNowBtn.textContent = 'Tidak Ada Pesanan';
+            }
+
+            // Handle the final payment click
+            payNowBtn.addEventListener('click', () => {
+                const selectedMethod = document.querySelector('input[name="payment_method"]:checked');
+                if (!selectedMethod) {
+                    alert('Mohon pilih metode pembayaran terlebih dahulu.');
+                    return;
+                }
+
+                payNowBtn.innerHTML = `<i class="fas fa-spinner fa-spin mr-2"></i> Memproses...`;
+                payNowBtn.disabled = true;
+
+                // Simulate payment processing
+                setTimeout(() => {
+                    alert('Pembayaran berhasil! Terima kasih atas pesanan Anda.');
+                    localStorage.removeItem('currentBookingDetails');
+
+                    // Animate progress bar to 100% before redirecting
+                    progressBar.style.width = '100%';
+
+                    setTimeout(() => {
+                        window.location.href = 'index.html';
+                    }, 500);
+
+                }, 2000);
+            });
+        });
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,923 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Catalog-MLEB</title>
+    <link rel="icon" href="/mleb_foto/MLEB-logo.png">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <style>
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background-color: white;
+            padding: 2.5rem;
+            border-radius: 1rem;
+            max-height: 90vh;
+            overflow-y: auto;
+            position: relative;
+            animation: fadeInScale 0.3s ease-out;
+            max-width: 500px;
+            width: 90%;
+        }
+
+        @keyframes fadeInScale {
+            from {
+                opacity: 0;
+                transform: scale(0.95);
+            }
+
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        .close-button {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            color: #6b7280;
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+
+        .close-button:hover {
+            color: #1f2937;
+        }
+
+        .hover-effect:hover {
+            transform: translateY(-2px);
+            transition: transform 0.2s ease-in-out;
+        }
+
+        .navbar-toggler-icon {
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba%28255, 255, 255, 1%29' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
+            background-repeat: no-repeat;
+            background-position: center;
+            background-size: 100%;
+        }
+
+        #navbarNav.hidden {
+            display: none;
+        }
+
+        @media (min-width: 768px) {
+            #navbarNav.hidden {
+                display: flex;
+            }
+        }
+
+        .sidebar-button.active {
+            background-color: #0d9488;
+            color: white;
+        }
+
+        .sidebar-button {
+            transition: all 0.2s ease-in-out;
+            background-color: #e2e8f0;
+            color: #1f2937;
+            font-weight: 500;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .fade-in-card {
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        .card-item {
+            transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+        }
+
+        .card-item:hover {
+            transform: translateY(-5px) scale(1.02);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        /* New styles for image gallery */
+        .image-gallery-container {
+            position: relative;
+        }
+
+        .main-image {
+            width: 100%;
+            height: 240px;
+            /* Adjust height as needed */
+            object-fit: cover;
+            border-radius: 0.5rem;
+        }
+
+        /* Update: thumbnail-container now wraps images instead of scrolling */
+        .thumbnail-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 0.5rem;
+            margin-top: 0.5rem;
+            padding-bottom: 0.5rem;
+            /* Tambahkan padding untuk estetika */
+        }
+
+        .thumbnail {
+            width: 50px;
+            height: 50px;
+            object-fit: cover;
+            cursor: pointer;
+            border-radius: 0.25rem;
+            transition: transform 0.2s ease-in-out, border 0.2s;
+            border: 2px solid transparent;
+        }
+
+        .thumbnail:hover {
+            transform: scale(1.1);
+        }
+
+        .thumbnail.active {
+            border-color: #035B71;
+            box-shadow: 0 0 5px rgba(3, 91, 113, 0.5);
+        }
+
+        /* Kelompok tombol utilitas mengambang */
+        .util-btn-group {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 60;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            gap: 12px;
+        }
+
+        .util-btn {
+            width: 50px;
+            height: 50px;
+            border-radius: 9999px;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            transition: transform 0.3s ease, opacity 0.3s ease, background-color 0.3s ease;
+            cursor: pointer;
+            background-color: #0D5C66;
+        }
+
+        .util-btn:hover {
+            transform: scale(1.1);
+        }
+
+        #whatsapp-btn {
+            background: #25D366;
+        }
+
+        #instagram-btn {
+            background: #E4405F;
+        }
+
+        #youtube-btn {
+            background: #FF0000;
+        }
+
+        #facebook-btn {
+            background: #1877F2;
+        }
+
+        #email-btn {
+            background: #EA4335;
+        }
+
+        /* Warna baru untuk tombol utilitas utama */
+        #main-util-btn {
+            background: #E53E3E;
+        }
+
+        #main-util-btn:hover {
+            background: #C53030;
+        }
+
+        /* Animasi muncul dan geser */
+        .util-btn.hidden {
+            opacity: 0;
+            transform: translateY(20px) scale(0.8);
+            pointer-events: none;
+        }
+
+        .util-btn-group-show #whatsapp-btn {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+            transition-delay: 0s;
+        }
+
+        .util-btn-group-show #instagram-btn {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+            transition-delay: 0.05s;
+        }
+
+        .util-btn-group-show #youtube-btn {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+            transition-delay: 0.1s;
+        }
+
+        .util-btn-group-show #facebook-btn {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+            transition-delay: 0.15s;
+        }
+
+        .util-btn-group-show #email-btn {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+            transition-delay: 0.2s;
+        }
+    </style>
+</head>
+
+<body class="bg-gray-100 font-sans">
+    <!-- Top Navbar Section -->
+    <div class="bg-[#035B71] text-white py-2 shadow-md">
+        <div class="container mx-auto px-4 flex flex-col sm:flex-row justify-between items-center gap-2">
+            <div class="flex items-center gap-2">
+                <i class="fas fa-globe text-white"></i>
+                <small class="text-white">museumlistrikpln.com | (+62) 812-3456-7890</small>
+            </div>
+            <div class="flex gap-4">
+                <a href="mailto:museumlistrikpln@gmail.com" class="text-white text-lg hover-effect"
+                    aria-label="Email Museum Listrik"><i class="fas fa-envelope"></i></a>
+                <a href="https://wa.me/6281234567890" target="_blank" class="text-white text-lg hover-effect"
+                    aria-label="WhatsApp Museum Listrik"><i class="fab fa-whatsapp"></i></a>
+                <a href="tel:+6281234567890" class="text-white text-lg hover-effect"
+                    aria-label="Telepon Museum Listrik"><i class="fas fa-phone"></i></a>
+                <a href="https://instagram.com/museumlistrik" target="_blank" class="text-white text-lg hover-effect"
+                    aria-label="Instagram Museum Listrik"><i class="fab fa-instagram"></i></a>
+                <a href="https://www.tiktok.com/@museumlistrikpln" target="_blank"
+                    class="text-white text-lg hover-effect" aria-label="TikTok Museum Listrik"><i
+                        class="fab fa-tiktok"></i></a>
+                <a href="https://www.youtube.com/@MuseumListrikPLN" target="_blank"
+                    class="text-white text-lg hover-effect" aria-label="YouTube Museum Listrik"><i
+                        class="fab fa-youtube"></i></a>
+            </div>
+        </div>
+    </div>
+
+    <nav class="sticky top-0 z-50 shadow-lg" style="background: linear-gradient(to right, #00AFC1, #0D5C66);">
+        <div class="container mx-auto px-0.5 py-0.5 flex items-center justify-between">
+            <a href="/companyprofile.html" class="flex items-center gap-2 text-white font-bold text-xl">
+                <img src="/mleb_foto/MLEB-logo.png" alt="Logo Museum Listrik dan Energi Baru Terbarukan"
+                    class="w-24 h-auto">
+            </a>
+
+            <button
+                class="md:hidden p-2 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-white"
+                id="navbar-toggler" aria-controls="mobile-nav-menu" aria-expanded="false"
+                aria-label="Toggle navigation">
+                <span class="line line-1 block"></span>
+                <span class="line line-2 block"></span>
+                <span class="line line-3 block"></span>
+            </button>
+
+            <div class="hidden md:flex flex-col md:flex-row md:items-center md:flex-1 w-full md:w-auto mt-4 md:mt-0"
+                id="navbarNav">
+                <ul class="flex flex-col md:flex-row md:ml-8 gap-3 md:gap-6 w-full md:w-auto">
+                    <li class="relative group">
+                        <a href="#"
+                            class="block py-2 px-3 text-white font-medium hover:text-yellow-300 transition duration-500">
+                            Beranda
+                        </a>
+                        <ul
+                            class="absolute bg-white text-gray-900 rounded-md shadow-lg py-2 mt-1 z-10 w-48 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 transform scale-95 group-hover:scale-100 origin-top-right">
+                            <li><a href="/index.html"
+                                    class="block py-2 px-4 hover:bg-gray-200 transition duration-200">HOME</a></li>
+                            <li><a href="/companyprofile.html"
+                                    class="block py-2 px-4 hover:bg-gray-200 transition duration-200">Tentang Kami</a>
+                            </li>
+                        </ul>
+                    </li>
+                    <li><a href="#news"
+                            class="block py-2 px-3 text-white font-medium hover:text-yellow-300 transition duration-500">News</a>
+                    </li>
+                    <li><a href="#events"
+                            class="block py-2 px-3 text-white font-medium hover:text-yellow-300 transition duration-500">Event</a>
+                    </li>
+                    <li><a href="/catalog.html"
+                            class="block py-2 px-3 text-white font-medium hover:text-yellow-300 transition duration-500">Katalog</a>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="flex flex-col md:flex-row items-center gap-4 md:gap-6 ml-auto mt-4 md:mt-0 w-full md:w-auto">
+                <form class="flex w-full md:w-auto navbar-search-form" role="search">
+                    <input
+                        class="search-input py-2 px-4 rounded-full mr-2 outline-none focus:ring-2 focus:ring-white focus:border-transparent w-full md:w-48"
+                        type="search" placeholder="Cari..." aria-label="Search">
+                    <button
+                        class="bg-white text-[#0D5C66] px-4 py-2 rounded-full font-semibold hover:bg-gray-200 transition duration-200 flex-shrink-0"
+                        type="submit">Cari</button>
+                </form>
+
+                <div class="relative group">
+                    <button
+                        class="flex items-center gap-2 text-white font-medium px-3 py-2 rounded-md hover:bg-white/10 transition duration-200"
+                        type="button" aria-expanded="false" aria-haspopup="true">
+                        <i class="fas fa-user-circle text-xl"></i> Profil
+                    </button>
+                    <ul
+                        class="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-10 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 transform scale-95 group-hover:scale-100 origin-top-right">
+                        <li><a class="block px-4 py-2 text-gray-800 hover:bg-gray-100"
+                                href="/dashboardUser.html">Dashboard</a></li>
+                        <li><a class="block px-4 py-2 text-gray-800 hover:bg-gray-100" href="/login.html">Login</a></li>
+                        <li>
+                            <hr class="border-t border-gray-200 my-1">
+                        </li>
+                        <li><a class="block px-4 py-2 text-red-600 hover:bg-gray-100" href="#">Keluar</a></li>
+                    </ul>
+                </div>
+
+                <a href="https://web.pln.co.id/" target="_blank"
+                    class="flex items-center gap-2 text-white font-medium px-3 py-2 rounded-md hover:bg-white/10 transition duration-200">
+                    <img src="/mleb_foto/logo-pln-removebg-preview.png" alt="Logo PLN" class="w-20 h-auto">
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="flex flex-col lg:flex-row min-h-screen bg-gray-100">
+        <!-- Sidebar -->
+        <aside
+            class="bg-white p-6 lg:w-80 shadow-lg rounded-xl lg:fixed lg:top-[80px] lg:left-0 lg:h-[calc(100vh-80px)] lg:p-8 overflow-y-auto mb-6 lg:mb-0 z-20">
+            <div class="flex flex-col h-full p-4 text-black">
+                <h2 class="text-2xl font-bold mb-4 text-teal-800">What We Have?</h2>
+                <hr class="border-t border-gray-300 mb-4">
+
+                <div class="mb-6 relative">
+                    <input type="text" id="searchInput" placeholder="Cari..."
+                        class="w-full px-4 py-2 rounded-full bg-gradient-to-r from-teal-100 to-cyan-200 text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-400 pl-10">
+                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                        <svg class="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                            xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                        </svg>
+                    </div>
+                </div>
+
+                <button onclick="filterRooms('all')" id="filter-all"
+                    class="sidebar-button w-full px-4 py-2 mb-3 rounded-full bg-gradient-to-r from-teal-500 to-cyan-600 text-white font-semibold hover:from-teal-600 hover:to-cyan-700 transition shadow-md active">
+                    Semua Penawaran
+                </button>
+                <button onclick="filterRooms('hotel')" id="filter-hotel"
+                    class="sidebar-button w-full px-4 py-2 mb-3 rounded-full bg-gradient-to-r from-teal-500 to-cyan-600 text-white font-semibold hover:from-teal-600 hover:to-cyan-700 transition shadow-md">
+                    Hotel
+                </button>
+                <button onclick="filterRooms('meeting-room')" id="filter-meeting-room"
+                    class="sidebar-button w-full px-4 py-2 mb-3 rounded-full bg-gradient-to-r from-teal-500 to-cyan-600 text-white font-semibold hover:from-teal-600 hover:to-cyan-700 transition shadow-md">
+                    Meeting Room
+                </button>
+                <button onclick="filterRooms('other-facilities')" id="filter-other-facilities"
+                    class="sidebar-button w-full px-4 py-2 mb-3 rounded-full bg-gradient-to-r from-teal-500 to-cyan-600 text-white font-semibold hover:from-teal-600 hover:to-cyan-700 transition shadow-md">
+                    Other Facilities
+                </button>
+                <button onclick="filterRooms('programs')" id="filter-programs"
+                    class="sidebar-button w-full px-4 py-2 mb-3 rounded-full bg-gradient-to-r from-teal-500 to-cyan-600 text-white font-semibold hover:from-teal-600 hover:to-cyan-700 transition shadow-md">
+                    Our Programs
+                </button>
+
+                <div class="mt-auto flex items-center space-x-2 text-sm text-black/80 pt-4 border-t border-gray-300">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" alt="WhatsApp Logo"
+                        class="w-5 h-5">
+                    <a href="https://wa.me/6281234567890" target="_blank"
+                        class="hover:underline hover:text-blue-500 transition duration-200">
+                        Contact Us via WhatsApp
+                    </a>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Catalog Display -->
+        <main class="flex-1 lg:ml-80">
+            <div class="p-4 lg:p-8">
+                <h1 class="text-3xl font-extrabold text-blue-800 mb-6 text-center lg:text-left">Semua Penawaran</h1>
+                <div id="loadingIndicator" class="text-center text-gray-500 mt-8 hidden">
+                    <div class="inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-current border-r-transparent align-[-0.125em] text-teal-500 motion-reduce:animate-[spin_1.5s_linear_infinite]"
+                        role="status">
+                        <span
+                            class="!absolute !-m-px !h-px !w-px !overflow-hidden !whitespace-nowrap !border-0 !p-0 ![clip:rect(0,0,0,0)]">Loading...</span>
+                    </div>
+                    <p class="mt-2 text-lg">Memuat penawaran...</p>
+                </div>
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6" id="roomSelectionContainer">
+                    <!-- Catalog items will be injected here by JavaScript -->
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Booking Confirmation Modal -->
+    <div id="bookingModal" class="modal-overlay">
+        <div class="modal-content">
+            <button class="close-button" onclick="closeModal()">&times;</button>
+            <div id="modal-content-details">
+                <!-- Details will be injected here -->
+            </div>
+        </div>
+    </div>
+
+    <div class="util-btn-group" id="utilBtnGroup">
+        <a href="mailto:museumlistrikpln@gmail.com" target="_blank" id="email-btn" class="util-btn hidden"
+            aria-label="Hubungi kami melalui Email">
+            <i class="fas fa-envelope text-2xl"></i>
+        </a>
+        <a href="#" target="_blank" id="facebook-btn" class="util-btn hidden" aria-label="Kunjungi Facebook kami">
+            <i class="fab fa-facebook-f text-2xl"></i>
+        </a>
+        <a href="https://www.youtube.com/@MuseumListrikPLN" target="_blank" id="youtube-btn" class="util-btn hidden"
+            aria-label="Kunjungi YouTube kami">
+            <i class="fab fa-youtube text-2xl"></i>
+        </a>
+        <a href="https://instagram.com/museumlistrik" target="_blank" id="instagram-btn" class="util-btn hidden"
+            aria-label="Kunjungi Instagram kami">
+            <i class="fab fa-instagram text-2xl"></i>
+        </a>
+        <a href="https://wa.me/6281234567890?text=Halo,%20saya%20tertarik%20dengan%20informasi%20dari%20website%20Anda."
+            target="_blank" id="whatsapp-btn" class="util-btn hidden" aria-label="Hubungi kami melalui WhatsApp">
+            <i class="fab fa-whatsapp text-2xl"></i>
+        </a>
+
+        <button id="mainUtilBtn" class="util-btn" aria-label="Tombol Utilitas">
+            <i class="fas fa-headset text-2xl"></i>
+        </button>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Data dummy untuk katalog. Data ini telah diperbarui dengan detail lebih lengkap.
+            const catalogItems = [
+                {
+                    id: 1,
+                    name: "Kamar Standar",
+                    description: "Kamar yang nyaman dengan pemandangan kota.",
+                    longDescription: "Nikmati kenyamanan maksimal di Kamar Standar kami yang dirancang dengan apik. Kamar ini dilengkapi dengan tempat tidur berkualitas, area kerja yang fungsional, dan pemandangan indah kota yang dapat dinikmati dari jendela.",
+                    price: 500000,
+                    images: [
+                        "/catalog_img/wisma energi baru.jpg",
+                        "/catalog_img/wisma energi.jpg",
+                        "/catalog_img/wisma listrik.jpeg"
+                    ],
+                    category: "hotel",
+                    capacity: "2 Tamu",
+                    amenities: ["WiFi Gratis", "AC", "TV Kabel", "Kamar Mandi Pribadi", "Meja Kerja"]
+                },
+                {
+                    id: 2,
+                    name: "Kamar Deluxe",
+                    description: "Kamar yang lebih luas dengan fasilitas premium.",
+                    longDescription: "Rasakan kemewahan di Kamar Deluxe kami yang lebih luas. Selain pemandangan kota yang menawan, kamar ini menawarkan area bersantai dengan sofa, perlengkapan mandi premium, dan minibar gratis.",
+                    price: 850000,
+                    images: [
+                        "/catalog_img/wisma energi baru.jpg",
+                        "/catalog_img/wisma energi.jpg",
+                        "/catalog_img/wisma listrik.jpeg"
+                    ],
+                    category: "hotel",
+                    capacity: "2-3 Tamu",
+                    amenities: ["WiFi Gratis", "AC", "TV Kabel", "Minibar", "Perlengkapan Mandi Premium", "Sofa"]
+                },
+                {
+                    id: 3,
+                    name: "Suite Keluarga",
+                    description: "Unit dua kamar tidur yang lapang dengan ruang tamu terpisah.",
+                    longDescription: "Sangat cocok untuk keluarga atau rombongan, Suite Keluarga ini menawarkan privasi dengan dua kamar tidur terpisah, ruang tamu yang luas, dan dapur kecil. Nikmati waktu berkualitas bersama di ruang yang terasa seperti rumah sendiri.",
+                    price: 1500000,
+                    images: [
+                        "/catalog_img/wisma energi baru.jpg",
+                        "/catalog_img/wisma energi.jpg",
+                        "/catalog_img/wisma listrik.jpeg"
+                    ],
+                    category: "hotel",
+                    capacity: "4 Tamu",
+                    amenities: ["Dua Kamar Tidur", "Ruang Tamu", "Dapur Kecil", "WiFi Gratis", "Sarapan Termasuk"]
+                },
+                {
+                    id: 4,
+                    name: "Ruang Pertemuan Kecil",
+                    description: "Ruang yang ideal untuk rapat tim kecil.",
+                    longDescription: "Fasilitasi ide-ide brilian di Ruang Pertemuan Kecil kami. Ruangan ini dilengkapi dengan proyektor, papan tulis interaktif, dan WiFi kecepatan tinggi, cocok untuk sesi brainstorming atau rapat tim yang intim.",
+                    price: 400000,
+                    images: [
+                        "/catalog_img/wisma energi baru.jpg",
+                        "/catalog_img/wisma energi.jpg",
+                        "/catalog_img/wisma listrik.jpeg"
+                    ],
+                    category: "meeting-room",
+                    capacity: "Hingga 10 orang",
+                    amenities: ["Proyektor", "Papan Tulis", "WiFi Kecepatan Tinggi", "Air Mineral", "Kopi/Teh"]
+                },
+                {
+                    id: 5,
+                    name: "Ruang Rapat Utama",
+                    description: "Fasilitas lengkap untuk konferensi dan presentasi besar.",
+                    longDescription: "Ruang Rapat Utama kami adalah pilihan sempurna untuk konferensi, seminar, atau presentasi skala besar. Dilengkapi dengan sistem audio-visual canggih, podium, dan pencahayaan yang dapat disesuaikan.",
+                    price: 1200000,
+                    images: [
+                        "/catalog_img/wisma energi baru.jpg",
+                        "/catalog_img/wisma energi.jpg",
+                        "/catalog_img/wisma listrik.jpeg"
+                    ],
+                    category: "meeting-room",
+                    capacity: "Hingga 50 orang",
+                    amenities: ["Sistem Audio-Visual", "Podium", "Mikrofon", "WiFi Kecepatan Tinggi", "Katering (Opsional)"]
+                },
+                {
+                    id: 6,
+                    name: "Kolam Renang & Spa",
+                    description: "Akses sehari penuh ke kolam renang infinity dan layanan spa.",
+                    longDescription: "Nikmati relaksasi total dengan akses sehari penuh ke Kolam Renang Infinity kami yang menakjubkan dan layanan Spa yang menyegarkan. Manjakan diri Anda dengan berbagai perawatan relaksasi yang profesional.",
+                    price: 350000,
+                    images: [
+                        "/catalog_img/wisma energi baru.jpg",
+                        "/catalog_img/wisma energi.jpg",
+                        "/catalog_img/wisma listrik.jpeg"
+                    ],
+                    category: "other-facilities",
+                    capacity: "Per orang",
+                    amenities: ["Handuk", "Ruang Ganti", "Loker", "Area Bersantai"]
+                },
+                {
+                    id: 7,
+                    name: "Pusat Kebugaran",
+                    description: "Nikmati fasilitas gym modern dengan pemandangan kota.",
+                    longDescription: "Jaga rutinitas kebugaran Anda di Pusat Kebugaran kami yang modern. Dengan peralatan lengkap, ruang yoga, dan pemandangan kota yang inspiratif, berolahraga tidak pernah semenyenangkan ini.",
+                    price: 150000,
+                    images: [
+                        "/catalog_img/wisma energi baru.jpg",
+                        "/catalog_img/wisma energi.jpg",
+                        "/catalog_img/wisma listrik.jpeg"
+                    ],
+                    category: "other-facilities",
+                    capacity: "Per orang",
+                    amenities: ["Alat Kardio & Angkat Beban", "Ruang Yoga", "Handuk", "Air Mineral"]
+                },
+                {
+                    id: 8,
+                    name: "Paket Tur Kota",
+                    description: "Eksplorasi tempat-tempat menarik di kota dengan pemandu profesional.",
+                    longDescription: "Jelajahi keindahan dan sejarah kota dengan Paket Tur Kota eksklusif kami. Pemandu profesional akan membawa Anda ke landmark ikonik dan tempat tersembunyi yang otentik.",
+                    price: 750000,
+                    images: [
+                        "/catalog_img/wisma energi baru.jpg",
+                        "/catalog_img/wisma energi.jpg",
+                        "/catalog_img/wisma listrik.jpeg"
+                    ],
+                    category: "programs",
+                    capacity: "Per orang",
+                    amenities: ["Pemandu Wisata", "Transportasi", "Tiket Masuk Obyek Wisata", "Makan Siang"]
+                }
+            ];
+
+            const roomSelectionContainer = document.getElementById('roomSelectionContainer');
+            const searchInput = document.getElementById('searchInput');
+            const loadingIndicator = document.getElementById('loadingIndicator');
+            let currentFilterCategory = 'all';
+
+            // Fungsi untuk merender item katalog ke dalam DOM
+            function renderCatalog(items) {
+                loadingIndicator.classList.remove('hidden');
+                roomSelectionContainer.innerHTML = '';
+
+                setTimeout(() => {
+                    loadingIndicator.classList.add('hidden');
+                    if (items.length === 0) {
+                        roomSelectionContainer.innerHTML = '<p class="text-center text-gray-500 col-span-full">Tidak ada penawaran yang cocok dengan kriteria pencarian Anda.</p>';
+                        return;
+                    }
+                    items.forEach(item => {
+                        // Buat thumbnail HTML
+                        const thumbnailsHtml = item.images.map((image, index) => `
+                            <img src="${image}" alt="${item.name} thumbnail ${index + 1}"
+                                class="thumbnail ${index === 0 ? 'active' : ''}"
+                                onclick="changeCardImage(this, ${item.id})">
+                        `).join('');
+
+                        const card = document.createElement('div');
+                        card.className = "bg-white rounded-lg shadow-lg overflow-hidden flex flex-col fade-in-card card-item";
+                        card.setAttribute('data-id', item.id);
+                        card.innerHTML = `
+                            <div class="image-gallery-container">
+                                <img src="${item.images[0]}" alt="${item.name}" class="w-full h-48 object-cover main-image-card" id="main-image-${item.id}">
+                                <div class="thumbnail-container p-2">
+                                    ${thumbnailsHtml}
+                                </div>
+                            </div>
+                            <div class="p-6 flex-1">
+                                <h3 class="text-xl font-bold text-gray-800 mb-2">${item.name}</h3>
+                                <p class="text-gray-600 text-sm mb-4">${item.description}</p>
+                                <p class="text-2xl font-bold text-blue-600">Rp ${item.price.toLocaleString('id-ID')}</p>
+                            </div>
+                            <div class="p-6 pt-0">
+                                <button class="add-to-cart-btn w-full bg-green-600 text-white py-3 rounded-md font-semibold hover:bg-green-700 transition duration-300" data-item-id="${item.id}">
+                                    Pesan Sekarang
+                                </button>
+                            </div>
+                        `;
+                        roomSelectionContainer.appendChild(card);
+                    });
+                }, 500); // Delay 500ms
+            }
+
+            // Fungsi untuk memfilter dan mencari item
+            function filterAndSearch() {
+                const searchTerm = searchInput.value.toLowerCase();
+                const filteredItems = catalogItems.filter(item => {
+                    const isCategoryMatch = currentFilterCategory === 'all' || item.category === currentFilterCategory;
+                    const isSearchMatch = item.name.toLowerCase().includes(searchTerm) || item.description.toLowerCase().includes(searchTerm);
+                    return isCategoryMatch && isSearchMatch;
+                });
+                renderCatalog(filteredItems);
+            }
+
+            // Fungsi untuk mengupdate filter dan memicu pencarian
+            window.filterRooms = function (category) {
+                currentFilterCategory = category;
+                document.querySelectorAll('.sidebar-button').forEach(btn => btn.classList.remove('active'));
+                document.getElementById(`filter-${category}`).classList.add('active');
+                filterAndSearch();
+            };
+
+            // Event listener untuk input pencarian
+            searchInput.addEventListener('input', filterAndSearch);
+
+            // Event listener untuk tombol "Pesan Sekarang"
+            document.addEventListener('click', function (event) {
+                if (event.target.classList.contains('add-to-cart-btn')) {
+                    const itemId = event.target.dataset.itemId;
+                    const selectedItem = catalogItems.find(item => item.id == itemId);
+                    if (selectedItem) {
+                        showModal(selectedItem);
+                    }
+                }
+            });
+
+            // Tampilkan seluruh katalog saat halaman pertama kali dimuat
+            renderCatalog(catalogItems);
+
+            // Logika untuk toggle navbar di mobile
+            const navToggler = document.getElementById('navbar-toggler');
+            const navBar = document.getElementById('navbarNav');
+            if (navToggler) {
+                navToggler.addEventListener('click', function () {
+                    navBar.classList.toggle('hidden');
+                });
+            }
+        });
+
+        // Fungsi untuk mengganti gambar utama di kartu
+        window.changeCardImage = function (thumbnail, itemId) {
+            const card = document.querySelector(`.card-item[data-id='${itemId}']`);
+            if (card) {
+                const mainImage = card.querySelector('.main-image-card');
+                const thumbnails = card.querySelectorAll('.thumbnail');
+
+                mainImage.src = thumbnail.src;
+
+                thumbnails.forEach(thumb => thumb.classList.remove('active'));
+                thumbnail.classList.add('active');
+            }
+        }
+
+        // Fungsi untuk menampilkan modal dengan form pemesanan yang lebih lengkap
+        function showModal(item) {
+            const modal = document.getElementById('bookingModal');
+            const modalDetails = document.getElementById('modal-content-details');
+
+            // Dapatkan tanggal hari ini dalam format YYYY-MM-DD untuk input 'min'
+            const today = new Date().toISOString().split('T')[0];
+
+            // Buat daftar fasilitas dalam format HTML
+            const amenitiesList = item.amenities.map(amenity => `
+                <li class="flex items-center text-gray-700">
+                    <i class="fas fa-check-circle text-green-500 mr-2"></i>
+                    <span>${amenity}</span>
+                </li>
+            `).join('');
+
+            // Buat thumbnail HTML untuk modal
+            const thumbnailsHtml = item.images.map((image, index) => `
+                <img src="${image}" alt="${item.name} thumbnail ${index + 1}"
+                    class="thumbnail ${index === 0 ? 'active' : ''}"
+                    onclick="changeModalImage(this)">
+            `).join('');
+
+            modalDetails.innerHTML = `
+                <h3 class="text-3xl font-bold text-gray-800 mb-4">Detail Pesanan</h3>
+                
+                <div class="flex flex-col items-center space-y-4 mb-6">
+                    <img id="modal-main-image" src="${item.images[0]}" alt="${item.name}" class="main-image">
+                    <div class="thumbnail-container">
+                        ${thumbnailsHtml}
+                    </div>
+                </div>
+
+                <div class="flex flex-col md:flex-row items-start space-y-4 md:space-y-0 md:space-x-4 mb-6">
+                    <div class="flex-1">
+                        <h4 class="text-xl font-bold text-gray-900">${item.name}</h4>
+                        <p class="text-gray-600 mt-1">${item.longDescription}</p>
+                        <p class="text-gray-600 mt-2">Kapasitas: <span class="font-semibold text-gray-800">${item.capacity}</span></p>
+                        <p class="text-2xl font-bold text-blue-600 mt-2">Rp ${item.price.toLocaleString('id-ID')}</p>
+                    </div>
+                </div>
+                
+                <hr class="my-4">
+                
+                <div class="mb-6">
+                    <h5 class="text-lg font-bold text-gray-800 mb-2">Fasilitas Termasuk:</h5>
+                    <ul class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                        ${amenitiesList}
+                    </ul>
+                </div>
+                
+                <hr class="my-4">
+                
+                <form id="bookingForm" class="mt-6 space-y-4">
+                    <div>
+                        <label for="name" class="block text-gray-700 font-medium mb-1">Nama Lengkap</label>
+                        <input type="text" id="name" name="name" required
+                            class="w-full px-4 py-2 border rounded-md focus:ring-2 focus:ring-blue-400 focus:border-transparent">
+                    </div>
+                    <div>
+                        <label for="email" class="block text-gray-700 font-medium mb-1">Email</label>
+                        <input type="email" id="email" name="email" required
+                            class="w-full px-4 py-2 border rounded-md focus:ring-2 focus:ring-blue-400 focus:border-transparent">
+                    </div>
+                    <div>
+                        <label for="checkinDate" class="block text-gray-700 font-medium mb-1">Tanggal Check-in</label>
+                        <input type="date" id="checkinDate" name="checkinDate" required min="${today}"
+                            class="w-full px-4 py-2 border rounded-md focus:ring-2 focus:ring-blue-400 focus:border-transparent">
+                    </div>
+                    <div>
+                        <label for="checkoutDate" class="block text-gray-700 font-medium mb-1">Tanggal Check-out</label>
+                        <input type="date" id="checkoutDate" name="checkoutDate" required min="${today}"
+                            class="w-full px-4 py-2 border rounded-md focus:ring-2 focus:ring-blue-400 focus:border-transparent">
+                    </div>
+                    <div>
+                        <label for="guests" class="block text-gray-700 font-medium mb-1">Jumlah Tamu</label>
+                        <input type="number" id="guests" name="guests" required min="1" value="1"
+                            class="w-full px-4 py-2 border rounded-md focus:ring-2 focus:ring-blue-400 focus:border-transparent">
+                    </div>
+                    
+                    <div class="p-4 bg-blue-50 rounded-md">
+                        <p class="text-gray-800 font-bold">Total Harga: <span id="totalPriceDisplay" class="text-xl text-blue-600">Rp 0</span></p>
+                    </div>
+                    
+                    <button type="submit" class="w-full bg-blue-600 text-white py-3 rounded-md font-semibold hover:bg-blue-700 transition duration-300">
+                        Pesan Sekarang
+                    </button>
+                </form>
+            `;
+
+            // Ambil elemen-elemen form setelah di-render
+            const checkinDateInput = document.getElementById('checkinDate');
+            const checkoutDateInput = document.getElementById('checkoutDate');
+            const totalPriceDisplay = document.getElementById('totalPriceDisplay');
+            const bookingForm = document.getElementById('bookingForm');
+
+            // Fungsi untuk menghitung total harga
+            function calculateTotalPrice() {
+                const checkinDate = new Date(checkinDateInput.value);
+                const checkoutDate = new Date(checkoutDateInput.value);
+
+                if (checkinDate && checkoutDate && checkinDate < checkoutDate) {
+                    const timeDifference = checkoutDate.getTime() - checkinDate.getTime();
+                    const dayDifference = Math.ceil(timeDifference / (1000 * 60 * 60 * 24));
+                    const totalPrice = item.price * dayDifference;
+                    totalPriceDisplay.textContent = `Rp ${totalPrice.toLocaleString('id-ID')}`;
+                } else {
+                    totalPriceDisplay.textContent = 'Rp 0';
+                }
+            }
+
+            // Event listener untuk input tanggal check-in dan check-out
+            checkinDateInput.addEventListener('change', () => {
+                checkoutDateInput.min = checkinDateInput.value;
+                calculateTotalPrice();
+            });
+            checkoutDateInput.addEventListener('change', calculateTotalPrice);
+
+            // Event listener untuk form pemesanan
+            if (bookingForm) {
+                bookingForm.addEventListener('submit', function (e) {
+                    e.preventDefault();
+
+                    // Ambil data dari form
+                    const name = document.getElementById('name').value;
+                    const email = document.getElementById('email').value;
+                    const checkinDate = document.getElementById('checkinDate').value;
+                    const checkoutDate = document.getElementById('checkoutDate').value;
+                    const guests = document.getElementById('guests').value;
+                    const totalHarga = totalPriceDisplay.textContent;
+
+                    // Tampilkan pesan sukses dengan ringkasan pemesanan
+                    modalDetails.innerHTML = `
+                        <h3 class="text-3xl font-bold text-green-600 mb-4 text-center">Pemesanan Berhasil!</h3>
+                        <p class="text-center text-lg text-gray-700">Terima kasih, **${name}**!</p>
+                        <p class="text-center text-gray-600 mt-2">Detail pesanan untuk **${item.name}** telah dikirim ke email Anda: **${email}**.</p>
+                        
+                        <div class="mt-6 p-4 bg-gray-100 rounded-md">
+                            <h4 class="font-bold text-gray-800 mb-2">Ringkasan Pemesanan:</h4>
+                            <ul class="text-gray-700 space-y-1">
+                                <li>**Nama:** ${name}</li>
+                                <li>**Email:** ${email}</li>
+                                <li>**Check-in:** ${checkinDate}</li>
+                                <li>**Check-out:** ${checkoutDate}</li>
+                                <li>**Jumlah Tamu:** ${guests}</li>
+                                <li>**Total Harga:** ${totalHarga}</li>
+                            </ul>
+                        </div>
+                        
+                        <button onclick="closeModal()" class="w-full mt-6 bg-blue-600 text-white py-3 rounded-md font-semibold hover:bg-blue-700 transition duration-300">
+                            Selesai
+                        </button>
+                    `;
+                });
+            }
+
+            modal.classList.add('active');
+        }
+
+        // Fungsi untuk mengganti gambar utama di modal
+        window.changeModalImage = function (thumbnail) {
+            const mainImage = document.getElementById('modal-main-image');
+            const thumbnails = document.querySelectorAll('.modal-content .thumbnail');
+
+            mainImage.src = thumbnail.src;
+
+            thumbnails.forEach(thumb => thumb.classList.remove('active'));
+            thumbnail.classList.add('active');
+        }
+
+        // Fungsi untuk menutup modal
+        function closeModal() {
+            const modal = document.getElementById('bookingModal');
+            modal.classList.remove('active');
+        }
+
+        // Fungsionalitas tombol utilitas
+        const mainUtilBtn = document.getElementById('mainUtilBtn');
+        const utilBtnGroup = document.getElementById('utilBtnGroup');
+        const utilButtons = document.querySelectorAll('.util-btn:not(#mainUtilBtn)');
+        const mainIcon = mainUtilBtn.querySelector('i');
+
+        if (mainUtilBtn && utilBtnGroup) {
+            mainUtilBtn.addEventListener('click', function () {
+                const isExpanded = utilBtnGroup.classList.toggle('util-btn-group-show');
+
+                if (isExpanded) {
+                    // Tampilkan tombol
+                    mainIcon.classList.remove('fa-headset');
+                    mainIcon.classList.add('fa-times');
+                    utilButtons.forEach(btn => btn.classList.remove('hidden'));
+                } else {
+                    // Sembunyikan tombol
+                    mainIcon.classList.remove('fa-times');
+                    mainIcon.classList.add('fa-headset');
+                    utilButtons.forEach(btn => btn.classList.add('hidden'));
+                }
+            });
+        }
+    </script>
+</body>
+
+</html>

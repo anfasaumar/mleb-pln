@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Login - Museum Listrik PLN</title>
+    <link rel="icon" href="/mleb_foto/MLEB-logo.png">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#0D5C66', // Dark Teal
+                        accent: '#00AFC1',  // Bright Cyan
+                        'error-red': '#EF4444', // Tailwind's red-500
+                    }
+                }
+            }
+        }
+    </script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <style>
+        /* Animasi background gradasi */
+        @keyframes gradient-animation {
+            0% {
+                background-position: 0% 50%;
+            }
+
+            50% {
+                background-position: 100% 50%;
+            }
+
+            100% {
+                background-position: 0% 50%;
+            }
+        }
+
+        .animated-gradient-bg {
+            background-size: 400% 400%;
+            animation: gradient-animation 15s ease infinite;
+        }
+
+        /* Animasi fade in untuk konten utama */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .animate-fadeIn {
+            animation: fadeIn 0.8s ease-out;
+        }
+
+        /* Styling kustom untuk form dan card */
+        .input-error {
+            border-color: var(--tw-colors-error-red);
+        }
+
+        .error-message {
+            color: var(--tw-colors-error-red);
+            font-size: 0.875rem;
+            margin-top: 0.25rem;
+        }
+
+        .card-login {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .card-login:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Styling untuk navbar */
+        .navbar-gradient {
+            background: linear-gradient(to right, #00AFC1, #0D5C66);
+        }
+
+        /* Hamburger menu lines */
+        .line {
+            width: 25px;
+            height: 3px;
+            background-color: white;
+            margin: 4px 0;
+            transition: all 0.3s ease;
+        }
+
+        #navbar-toggler.open .line-1 {
+            transform: rotate(-45deg) translate(-5px, 6px);
+        }
+
+        #navbar-toggler.open .line-2 {
+            opacity: 0;
+        }
+
+        #navbar-toggler.open .line-3 {
+            transform: rotate(45deg) translate(-5px, -6px);
+        }
+
+        /* Mobile menu display */
+        #navbarNav {
+            display: none;
+        }
+
+        @media (min-width: 768px) {
+            #navbarNav {
+                display: flex !important;
+            }
+        }
+
+        #navbarNav.open {
+            display: flex;
+        }
+
+        /* Hover effect untuk ikon sosial media */
+        .hover-effect:hover {
+            color: #fcd34d;
+            transition: color 0.3s ease;
+        }
+
+        /* Gaya tambahan untuk efek interaktif */
+        .input-wrapper {
+            transition: transform 0.2s ease;
+        }
+
+        .input-wrapper:focus-within {
+            transform: scale(1.02);
+        }
+
+        .parallax-bg {
+            transition: transform 0.5s ease-out;
+        }
+    </style>
+</head>
+
+<body class="bg-primary flex flex-col min-h-screen font-sans">
+
+    <div class="bg-[#035B71] text-white py-2 shadow-md">
+        <div class="container mx-auto px-4 flex flex-col sm:flex-row justify-between items-center gap-2">
+            <div class="flex items-center gap-2">
+                <i class="fas fa-globe text-white"></i>
+                <small class="text-white">museumlistrikpln.com | (+62) 812-3456-7890</small>
+            </div>
+            <div class="flex gap-4">
+                <a href="mailto:museumlistrikpln@gmail.com" class="text-white text-lg hover-effect"
+                    aria-label="Email Museum Listrik"><i class="fas fa-envelope"></i></a>
+                <a href="https://wa.me/6281234567890" target="_blank" class="text-white text-lg hover-effect"
+                    aria-label="WhatsApp Museum Listrik"><i class="fab fa-whatsapp"></i></a>
+                <a href="tel:+6281234567890" class="text-white text-lg hover-effect"
+                    aria-label="Telepon Museum Listrik"><i class="fas fa-phone"></i></a>
+                <a href="https://instagram.com/museumlistrik" target="_blank" class="text-white text-lg hover-effect"
+                    aria-label="Instagram Museum Listrik"><i class="fab fa-instagram"></i></a>
+                <a href="https://www.tiktok.com/@museumlistrikpln" target="_blank"
+                    class="text-white text-lg hover-effect" aria-label="TikTok Museum Listrik"><i
+                        class="fab fa-tiktok"></i></a>
+                <a href="https://www.youtube.com/@MuseumListrikPLN" target="_blank"
+                    class="text-white text-lg hover-effect" aria-label="YouTube Museum Listrik"><i
+                        class="fab fa-youtube"></i></a>
+            </div>
+        </div>
+    </div>
+
+    <nav class="sticky top-0 z-50 shadow-lg navbar-gradient">
+        <div class="container mx-auto px-0.5 py-0.5 flex items-center justify-between">
+            <a href="/companyprofile.html" class="flex items-center gap-2 text-white font-bold text-xl">
+                <img src="/mleb_foto/MLEB-logo.png" alt="Logo Museum Listrik dan Energi Baru Terbarukan"
+                    class="w-24 h-auto">
+            </a>
+
+            <button
+                class="md:hidden p-2 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-white"
+                id="navbar-toggler" aria-controls="mobile-nav-menu" aria-expanded="false"
+                aria-label="Toggle navigation">
+                <span class="line line-1 block"></span>
+                <span class="line line-2 block"></span>
+                <span class="line line-3 block"></span>
+            </button>
+
+            <div class="hidden md:flex flex-col md:flex-row md:items-center md:flex-1 w-full md:w-auto mt-4 md:mt-0"
+                id="navbarNav">
+                <ul class="flex flex-col md:flex-row md:ml-8 gap-3 md:gap-6 w-full md:w-auto">
+                    <li class="relative group">
+                        <a href="#"
+                            class="block py-2 px-3 text-white font-medium hover:text-yellow-300 transition duration-500">
+                            Beranda
+                        </a>
+                        <ul
+                            class="absolute bg-white text-gray-900 rounded-md shadow-lg py-2 mt-1 z-10 w-48 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 transform scale-95 group-hover:scale-100 origin-top-right">
+                            <li><a href="/index.html"
+                                    class="block py-2 px-4 hover:bg-gray-200 transition duration-200">HOME</a></li>
+                            <li><a href="/companyprofile.html"
+                                    class="block py-2 px-4 hover:bg-gray-200 transition duration-200">Tentang Kami</a>
+                            </li>
+                        </ul>
+                    </li>
+                    <li><a href="#news"
+                            class="block py-2 px-3 text-white font-medium hover:text-yellow-300 transition duration-500">News</a>
+                    </li>
+                    <li><a href="#events"
+                            class="block py-2 px-3 text-white font-medium hover:text-yellow-300 transition duration-500">Event</a>
+                    </li>
+                    <li><a href="/catalog.html"
+                            class="block py-2 px-3 text-white font-medium hover:text-yellow-300 transition duration-500">Katalog</a>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="flex flex-col md:flex-row items-center gap-4 md:gap-6 ml-auto mt-4 md:mt-0 w-full md:w-auto">
+                <form class="flex w-full md:w-auto navbar-search-form" role="search">
+                    <input
+                        class="search-input py-2 px-4 rounded-full mr-2 outline-none focus:ring-2 focus:ring-white focus:border-transparent w-full md:w-48"
+                        type="search" placeholder="Cari..." aria-label="Search">
+                    <button
+                        class="bg-white text-[#0D5C66] px-4 py-2 rounded-full font-semibold hover:bg-gray-200 transition duration-200 flex-shrink-0"
+                        type="submit">Cari</button>
+                </form>
+
+                <div class="relative group">
+                    <button
+                        class="flex items-center gap-2 text-white font-medium px-3 py-2 rounded-md hover:bg-white/10 transition duration-200"
+                        type="button" aria-expanded="false" aria-haspopup="true">
+                        <i class="fas fa-user-circle text-xl"></i> Profil
+                    </button>
+                    <ul
+                        class="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-10 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 transform scale-95 group-hover:scale-100 origin-top-right">
+                        <li><a class="block px-4 py-2 text-gray-800 hover:bg-gray-100"
+                                href="/dashboardUser.html">Dashboard</a></li>
+                        <li><a class="block px-4 py-2 text-gray-800 hover:bg-gray-100" href="/login.html">Login</a></li>
+                        <li>
+                            <hr class="border-t border-gray-200 my-1">
+                        </li>
+                        <li><a class="block px-4 py-2 text-red-600 hover:bg-gray-100" href="#">Keluar</a></li>
+                    </ul>
+                </div>
+
+                <a href="https://web.pln.co.id/" target="_blank"
+                    class="flex items-center gap-2 text-white font-medium px-3 py-2 rounded-md hover:bg-white/10 transition duration-200">
+                    <img src="/mleb_foto/logo-pln-removebg-preview.png" alt="Logo PLN" class="w-20 h-auto">
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <main
+        class="flex-1 flex items-center justify-center p-4 bg-gradient-to-br from-primary to-accent animated-gradient-bg relative overflow-hidden">
+        <div class="absolute inset-0 z-0 opacity-10">
+            <svg class="w-full h-full" xmlns="http://www.w3.org/2000/svg">
+                <pattern id="pattern-cubes" x="0" y="0" width="40" height="40" patternUnits="userSpaceOnUse">
+                    <path d="M 0 0 L 20 0 L 20 20 L 0 20 Z" fill="#ffffff" stroke-width="0.5" stroke="#ffffff"
+                        fill-opacity="0.2" />
+                    <path d="M 20 0 L 40 0 L 40 20 L 20 20 Z" fill="#ffffff" stroke-width="0.5" stroke="#ffffff"
+                        fill-opacity="0.1" />
+                    <path d="M 0 20 L 20 20 L 20 40 L 0 40 Z" fill="#ffffff" stroke-width="0.5" stroke="#ffffff"
+                        fill-opacity="0.1" />
+                    <path d="M 20 20 L 40 20 L 40 40 L 20 40 Z" fill="#ffffff" stroke-width="0.5" stroke="#ffffff"
+                        fill-opacity="0.05" />
+                </pattern>
+                <rect x="0" y="0" width="100%" height="100%" fill="url(#pattern-cubes)"></rect>
+            </svg>
+        </div>
+
+        <div
+            class="relative z-10 bg-white rounded-3xl shadow-2xl p-0 w-full max-w-5xl flex flex-col md:flex-row animate-fadeIn overflow-hidden card-login">
+            <div
+                class="flex-1 p-8 bg-primary rounded-t-3xl md:rounded-l-3xl md:rounded-tr-none text-white flex flex-col justify-center items-center md:items-start text-center md:text-left relative overflow-hidden">
+                <div class="relative z-10">
+                    <h2 class="text-4xl font-bold mb-4 drop-shadow">Selamat Datang Kembali!</h2>
+                    <p class="text-lg mb-6 drop-shadow">Masuk untuk melanjutkan petualangan Anda di Museum Listrik dan
+                        Energi Baru Terbarukan.</p>
+                    <a href="/daftar.html"
+                        class="inline-block bg-white text-primary font-bold py-3 px-8 rounded-full hover:bg-gray-200 transition duration-300 transform hover:scale-105 shadow-lg">
+                        Belum punya akun? Daftar Sekarang
+                    </a>
+                </div>
+                <img id="parallax-robot" src="/mleb_foto/icon robot1.png" alt="Robot Icon"
+                    class="absolute bottom-0 right-0 w-64 h-auto opacity-80 z-0 transform translate-x-1/4 translate-y-1/4 parallax-bg" />
+            </div>
+
+            <div class="flex-1 p-8 flex flex-col justify-center">
+                <div class="w-full max-w-sm mx-auto">
+                    <h3 class="text-2xl font-bold text-gray-800 text-center mb-6">Masuk ke Akun Anda</h3>
+                    <form id="loginForm" class="space-y-6" onsubmit="handleLogin(event)">
+                        <div class="input-wrapper">
+                            <label for="email" class="block text-sm font-medium text-gray-700 mb-1">Email</label>
+                            <div class="relative">
+                                <input type="email" id="email" name="email" placeholder="contoh@domain.com"
+                                    class="w-full border border-gray-300 rounded-lg px-4 py-3 pr-10 focus:outline-none focus:ring-2 focus:ring-accent focus:border-transparent"
+                                    required />
+                                <i
+                                    class="fas fa-envelope absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none"></i>
+                                <p id="emailError" class="error-message hidden">Masukkan email yang valid.</p>
+                            </div>
+                        </div>
+
+                        <div class="input-wrapper">
+                            <label for="password" class="block text-sm font-medium text-gray-700 mb-1">Kata
+                                Sandi</label>
+                            <div class="relative">
+                                <input type="password" id="password" name="password" placeholder="••••••••"
+                                    class="w-full border border-gray-300 rounded-lg px-4 py-3 pr-10 focus:outline-none focus:ring-2 focus:ring-accent focus:border-transparent"
+                                    required />
+                                <i id="passwordToggle"
+                                    class="fas fa-eye absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 cursor-pointer hover:text-gray-600"
+                                    onclick="togglePasswordVisibility()"></i>
+                                <p id="passwordError" class="error-message hidden">Kata sandi minimal 6 karakter.</p>
+                            </div>
+                        </div>
+
+                        <div class="flex items-center justify-between">
+                            <label class="flex items-center gap-2 text-sm text-gray-700 cursor-pointer">
+                                <input type="checkbox" id="rememberMe" class="accent-primary h-4 w-4 rounded" />
+                                Ingat Saya
+                            </label>
+                            <a href="#" class="text-sm text-accent hover:underline font-medium">Lupa Sandi?</a>
+                        </div>
+
+                        <button type="submit" id="loginButton"
+                            class="w-full bg-primary hover:bg-accent text-white font-semibold py-3 rounded-lg transition duration-200 ease-in-out flex items-center justify-center gap-2"
+                            disabled>
+                            <span id="buttonText">Masuk</span>
+                            <span id="loadingSpinner" class="hidden fas fa-spinner fa-spin"></span>
+                        </button>
+                        <p id="generalError" class="error-message text-center hidden">Terjadi kesalahan. Silakan coba
+                            lagi.</p>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        const navbarToggler = document.getElementById('navbar-toggler');
+        const navbarNav = document.getElementById('navbarNav');
+        const emailInput = document.getElementById('email');
+        const passwordInput = document.getElementById('password');
+        const emailError = document.getElementById('emailError');
+        const passwordError = document.getElementById('passwordError');
+        const loginButton = document.getElementById('loginButton');
+        const passwordToggle = document.getElementById('passwordToggle');
+        const buttonText = document.getElementById('buttonText');
+        const loadingSpinner = document.getElementById('loadingSpinner');
+        const generalError = document.getElementById('generalError');
+
+        // Toggle mobile navbar
+        navbarToggler.addEventListener('click', () => {
+            const isExpanded = navbarToggler.getAttribute('aria-expanded') === 'true';
+            navbarToggler.setAttribute('aria-expanded', !isExpanded);
+            navbarToggler.classList.toggle('open');
+            navbarNav.classList.toggle('hidden');
+            navbarNav.classList.toggle('flex');
+        });
+
+        // Validasi email
+        function isValidEmail(email) {
+            return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+        }
+
+        // Fungsi validasi form utama
+        function validateForm() {
+            let isEmailValid = isValidEmail(emailInput.value.trim());
+            let isPasswordValid = passwordInput.value.length >= 6;
+
+            emailInput.classList.toggle('input-error', !isEmailValid);
+            emailError.classList.toggle('hidden', isEmailValid);
+
+            passwordInput.classList.toggle('input-error', !isPasswordValid);
+            passwordError.classList.toggle('hidden', isPasswordValid);
+
+            loginButton.disabled = !(isEmailValid && isPasswordValid);
+        }
+
+        // Event listener untuk validasi saat input berubah
+        emailInput.addEventListener('input', validateForm);
+        passwordInput.addEventListener('input', validateForm);
+
+        // Validasi awal saat halaman dimuat
+        document.addEventListener('DOMContentLoaded', validateForm);
+
+        // Fungsi untuk menampilkan/menyembunyikan kata sandi
+        function togglePasswordVisibility() {
+            const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+            passwordInput.setAttribute('type', type);
+            passwordToggle.classList.toggle('fa-eye');
+            passwordToggle.classList.toggle('fa-eye-slash');
+        }
+
+        // Penanganan submit form
+        async function handleLogin(event) {
+            event.preventDefault();
+
+            validateForm();
+
+            if (loginButton.disabled) {
+                return;
+            }
+
+            loginButton.disabled = true;
+            buttonText.textContent = 'Memuat...';
+            loadingSpinner.classList.remove('hidden');
+            generalError.classList.add('hidden');
+
+            try {
+                // Simulasi panggilan API
+                const response = await new Promise(resolve => setTimeout(() => {
+                    const email = emailInput.value;
+                    const password = passwordInput.value;
+                    const isRememberMeChecked = document.getElementById('rememberMe').checked;
+
+                    if (email === 'user@example.com' && password === 'password123') {
+                        if (isRememberMeChecked) {
+                            localStorage.setItem('userEmail', email);
+                        } else {
+                            localStorage.removeItem('userEmail');
+                        }
+                        resolve({ success: true, message: 'Login berhasil!' });
+                    } else if (email === 'error@example.com') {
+                        resolve({ success: false, message: 'Email tidak terdaftar.' });
+                    } else {
+                        resolve({ success: false, message: 'Email atau kata sandi salah.' });
+                    }
+                }, 1500));
+
+                if (response.success) {
+                    alert(response.message + '\nSelamat datang!');
+                    window.location.href = '/dashboardUser.html';
+                } else {
+                    generalError.textContent = response.message;
+                    generalError.classList.remove('hidden');
+                }
+            } catch (error) {
+                console.error('Login error:', error);
+                generalError.textContent = 'Terjadi kesalahan jaringan. Silakan coba lagi.';
+                generalError.classList.remove('hidden');
+            } finally {
+                loginButton.disabled = false;
+                buttonText.textContent = 'Masuk';
+                loadingSpinner.classList.add('hidden');
+            }
+        }
+
+        // Memuat data email yang disimpan (jika ada)
+        document.addEventListener('DOMContentLoaded', () => {
+            const savedEmail = localStorage.getItem('userEmail');
+            if (savedEmail) {
+                emailInput.value = savedEmail;
+                document.getElementById('rememberMe').checked = true;
+                validateForm();
+            }
+        });
+
+        // Efek Parallax
+        const cardLogin = document.querySelector('.card-login');
+        const parallaxRobot = document.getElementById('parallax-robot');
+
+        if (cardLogin && parallaxRobot) {
+            cardLogin.addEventListener('mousemove', (e) => {
+                const rect = cardLogin.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                const centerX = rect.width / 2;
+                const centerY = rect.height / 2;
+                const moveX = (x - centerX) / 25;
+                const moveY = (y - centerY) / 25;
+
+                parallaxRobot.style.transform = `translate(${moveX}px, ${moveY}px)`;
+            });
+
+            cardLogin.addEventListener('mouseleave', () => {
+                parallaxRobot.style.transform = 'translate(0, 0)';
+            });
+        }
+    </script>
+</body>
+
+</html>

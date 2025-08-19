@@ -1,0 +1,2347 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Museum Listrik PLN</title>
+    <link rel="icon" href="/mleb_foto/MLEB-logo.png">
+
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;700&display=swap');
+
+        :root {
+            --primary-color: #004d99;
+            /* Biru Tua */
+            --secondary-color: #ff9800;
+            /* Oranye */
+            --background-color: #f5f7fa;
+            /* Abu-abu terang */
+            --card-background: #ffffff;
+            --text-color: #333;
+            --border-color: #e0e0e0;
+            --shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+            --radius: 12px;
+        }
+
+        body {
+            font-family: 'Helvetica', sans-serif;
+            background-color: var(--background-color);
+            color: var(--text-color);
+            line-height: 1.6;
+        }
+
+        .hero {
+            background: url('https://images.unsplash.com/photo-1542314831-068cd1dbfe26?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D') no-repeat center center/cover;
+            height: 70vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            text-align: center;
+            position: relative;
+            background-attachment: fixed;
+            /* Efek Parallax */
+        }
+
+        .hero-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        .hero h1 {
+            font-size: 3.5rem;
+            font-weight: 700;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+            animation: text-pop-up-top 0.8s cubic-bezier(0.250, 0.460, 0.450, 0.940) both;
+        }
+
+        .hero p {
+            font-size: 1.5rem;
+            font-weight: 300;
+            margin-top: 10px;
+            animation: text-pop-up-top 0.8s cubic-bezier(0.250, 0.460, 0.450, 0.940) 0.5s both;
+        }
+
+        .booking-card {
+            background: var(--card-background);
+            padding: 30px;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            margin: -60px auto 40px;
+            position: relative;
+            z-index: 10;
+            width: 90%;
+            max-width: 900px;
+            border: 1px solid var(--border-color);
+        }
+
+        .btn-search {
+            background: var(--secondary-color);
+            color: white;
+            border: none;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+        }
+
+        .btn-search:hover {
+            background-color: #e68900;
+            transform: translateY(-2px);
+        }
+
+        .room-card {
+            background: var(--card-background);
+            border-radius: var(--radius);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            border: 1px solid var(--border-color);
+            animation: fadeIn 0.8s ease forwards;
+            opacity: 0;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .room-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn-book {
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .btn-book:hover {
+            background-color: #003366;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 200;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.4);
+            animation: fadeInModal 0.3s ease;
+        }
+
+        .modal-content {
+            background-color: #fefefe;
+            margin: 10% auto;
+            padding: 30px;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            width: 80%;
+            max-width: 600px;
+            position: relative;
+        }
+
+        .close-btn {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .close-btn:hover,
+        .close-btn:focus {
+            color: black;
+            text-decoration: none;
+        }
+
+        /* Burger menu styling for mobile */
+        #navbar-toggler .line {
+            width: 25px;
+            height: 3px;
+            background-color: white;
+            margin: 5px 0;
+            transition: all 0.3s ease;
+        }
+
+        /* Burger menu toggle animation */
+        #navbar-toggler.active .line-1 {
+            transform: rotate(-45deg) translate(-5px, 6px);
+        }
+
+        #navbar-toggler.active .line-2 {
+            opacity: 0;
+        }
+
+        #navbar-toggler.active .line-3 {
+            transform: rotate(45deg) translate(-5px, -6px);
+        }
+
+        /* Nav menu animation */
+        #mobile-nav-menu {
+            transition: transform 0.3s ease-in-out;
+            transform: translateX(100%);
+        }
+
+        #mobile-nav-menu.show {
+            transform: translateX(0);
+        }
+
+
+        /* Animasi Keyframes */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes text-pop-up-top {
+            0% {
+                transform: translateY(20px);
+                opacity: 0;
+            }
+
+            100% {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        @keyframes fadeInModal {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+
+        /* Carousel scrollbar hide */
+        .carousel-container,
+        .logo-carousel-container {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+
+        .carousel-container::-webkit-scrollbar,
+        .logo-carousel-container::-webkit-scrollbar {
+            display: none;
+        }
+
+        /* Smooth marquee effect for logo carousel */
+        .marquee-wrapper {
+            display: flex;
+            animation: marquee 30s linear infinite;
+        }
+
+        .marquee-wrapper:hover {
+            animation-play-state: paused;
+        }
+
+        @keyframes marquee {
+            0% {
+                transform: translateX(0);
+            }
+
+            100% {
+                transform: translateX(-50%);
+            }
+        }
+
+        .marquee-item {
+            flex-shrink: 0;
+            width: 150px;
+            margin-right: 40px;
+        }
+
+        /* Hero Carousel specific styles */
+        .hero-carousel-slide {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-size: cover;
+            background-position: center;
+            opacity: 0;
+            transition: opacity 1.5s ease-in-out;
+            z-index: 1;
+            /* Below the overlay and content */
+        }
+
+        .hero-carousel-slide.active {
+            opacity: 1;
+            z-index: 2;
+            /* Active slide is visible */
+        }
+
+        /* Overlay */
+        .hero-overlay {
+            position: absolute;
+            inset: 0;
+            background-color: transparent;
+            /* Semi-transparent black */
+            z-index: 3;
+            /* Above slides, below content */
+        }
+
+        /* Hero Content */
+        .hero-content-wrapper {
+            position: relative;
+            z-index: 4;
+            /* Above everything */
+            height: 100%;
+            /* Ensure it spans full height */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+        }
+
+        /* <!-- CSS untuk flip effect  */
+        .flip-card {
+            perspective: 1000px;
+        }
+
+        .flip-card-inner {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            transition: transform 0.8s ease;
+            transform-style: preserve-3d;
+        }
+
+        .flip-card:hover .flip-card-inner {
+            transform: rotateY(180deg);
+        }
+
+        .flip-card-front,
+        .flip-card-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border-radius: 1rem;
+            backface-visibility: hidden;
+            box-shadow: 0 12px 32px rgba(0, 0, 0, 0.15);
+            overflow: hidden;
+        }
+
+        .flip-card-front {
+            background: #fff;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 2rem;
+            text-align: center;
+        }
+
+        .flip-card-back {
+            background: linear-gradient(to right, #00afc1, #0d5c66);
+            color: #fff;
+            transform: rotateY(180deg);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 2rem;
+            text-align: center;
+        }
+
+        @media (max-width: 640px) {
+            .flip-card {
+                max-width: 100%;
+                height: 300px;
+            }
+        }
+
+        @media (min-width: 641px) {
+            .flip-card {
+                max-width: 320px;
+                height: 400px;
+            }
+        }
+
+        /* CSS Kustom untuk Animasi Scrolling news */
+        @keyframes scroll-left {
+            0% {
+                transform: translateX(0%);
+            }
+
+            100% {
+                transform: translateX(-50%);
+                /* Scroll setengah dari total lebar konten (termasuk duplikat) */
+            }
+        }
+
+        .animate-scroll {
+            animation: scroll-left var(--scroll-speed, 60s) linear infinite;
+        }
+
+        .scroll-track:hover .animate-scroll {
+            animation-play-state: paused;
+            /* Berhenti scroll saat di-hover */
+        }
+
+        /* Styling tambahan untuk gambar */
+        .card-events-img img {
+            width: 100%;
+            /* Memastikan gambar mengisi lebar kartu */
+            height: 150px;
+            /* Tinggi tetap untuk gambar */
+            object-fit: cover;
+            /* Memastikan gambar pas tanpa terdistorsi */
+            border-radius: 0.25rem;
+            /* Sudut sedikit melengkung */
+            margin-bottom: 0.5rem;
+            /* Spasi di bawah gambar */
+        }
+
+        /* Responsivitas untuk kartu */
+        @media (min-width: 640px) {
+            .item {
+                min-width: 250px;
+                /* Lebar kartu sedikit lebih besar di layar menengah */
+            }
+        }
+
+        @media (min-width: 1024px) {
+            .item {
+                min-width: 300px;
+                /* Lebar kartu lebih besar di layar desktop */
+            }
+        }
+
+        /* Kelompok tombol utilitas mengambang */
+        .util-btn-group {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 60;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            gap: 12px;
+        }
+
+        .util-btn {
+            width: 50px;
+            height: 50px;
+            border-radius: 9999px;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            transition: transform 0.3s ease, opacity 0.3s ease, background-color 0.3s ease;
+            cursor: pointer;
+            background-color: #0D5C66;
+        }
+
+        .util-btn:hover {
+            transform: scale(1.1);
+        }
+
+        #whatsapp-btn {
+            background: #25D366;
+        }
+
+        #instagram-btn {
+            background: #E4405F;
+        }
+
+        #youtube-btn {
+            background: #FF0000;
+        }
+
+        #facebook-btn {
+            background: #1877F2;
+        }
+
+        #email-btn {
+            background: #EA4335;
+        }
+
+        /* Warna baru untuk tombol utilitas utama */
+        #main-util-btn {
+            background: #E53E3E;
+        }
+
+        #main-util-btn:hover {
+            background: #C53030;
+        }
+
+        /* Animasi muncul dan geser */
+        .util-btn.hidden {
+            opacity: 0;
+            transform: translateY(20px) scale(0.8);
+            pointer-events: none;
+        }
+
+        .util-btn-group-show #whatsapp-btn {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+            transition-delay: 0s;
+        }
+
+        .util-btn-group-show #instagram-btn {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+            transition-delay: 0.05s;
+        }
+
+        .util-btn-group-show #youtube-btn {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+            transition-delay: 0.1s;
+        }
+
+        .util-btn-group-show #facebook-btn {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+            transition-delay: 0.15s;
+        }
+
+        .util-btn-group-show #email-btn {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+            transition-delay: 0.2s;
+        }
+    </style>
+</head>
+
+<body>
+
+    <body class="bg-gray-100 font-sans">
+        <!-- Top Navbar Section -->
+        <div class="bg-[#035B71] text-white py-2 shadow-md">
+            <div class="container mx-auto px-4 flex flex-col sm:flex-row justify-between items-center gap-2">
+                <div class="flex items-center gap-2">
+                    <i class="fas fa-globe text-white"></i>
+                    <small class="text-white">museumlistrikpln.com | 0821 1236 7305</small>
+                </div>
+                <div class="flex gap-4">
+                    <a href="mailto:museumlistrikpln@gmail.com" class="text-white text-lg hover-effect"
+                        aria-label="Email Museum Listrik"><i class="fas fa-envelope"></i></a>
+                    <a href="https://wa.me/082112367305" target="_blank" class="text-white text-lg hover-effect"
+                        aria-label="WhatsApp Museum Listrik"><i class="fab fa-whatsapp"></i></a>
+                    <a href="tel:082112367305" class="text-white text-lg hover-effect"
+                        aria-label="Telepon Museum Listrik"><i class="fas fa-phone"></i></a>
+                    <a href="https://www.instagram.com/museumlistrik.tmii/" target="_blank"
+                        class="text-white text-lg hover-effect" aria-label="Instagram Museum Listrik"><i
+                            class="fab fa-instagram"></i></a>
+                    <a href="https://www.tiktok.com/@plnmuseumlistrik" target="_blank"
+                        class="text-white text-lg hover-effect" aria-label="TikTok Museum Listrik"><i
+                            class="fab fa-tiktok"></i></a>
+                    <a href="https://www.youtube.com/@museumlistrikpln" target="_blank"
+                        class="text-white text-lg hover-effect" aria-label="YouTube Museum Listrik"><i
+                            class="fab fa-youtube"></i></a>
+                </div>
+            </div>
+        </div>
+
+        <nav class="sticky top-0 z-50 shadow-lg" style="background: linear-gradient(to right, #00AFC1, #0D5C66);">
+            <div class="container mx-auto px-0.5 py-0.5 flex items-center justify-between">
+                <a href="/companyprofile.html" class="flex items-center gap-2 text-white font-bold text-xl">
+                    <img src="/mleb_foto/MLEB-logo.png" alt="Logo Museum Listrik dan Energi Baru Terbarukan"
+                        class="w-24 h-auto">
+                </a>
+
+                <button
+                    class="md:hidden p-2 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-white"
+                    id="navbar-toggler" aria-controls="mobile-nav-menu" aria-expanded="false"
+                    aria-label="Toggle navigation">
+                    <span class="line line-1 block"></span>
+                    <span class="line line-2 block"></span>
+                    <span class="line line-3 block"></span>
+                </button>
+
+                <div class="hidden md:flex flex-col md:flex-row md:items-center md:flex-1 w-full md:w-auto mt-4 md:mt-0"
+                    id="navbarNav">
+                    <ul class="flex flex-col md:flex-row md:ml-8 gap-3 md:gap-6 w-full md:w-auto">
+                        <li class="relative group">
+                            <a href="#"
+                                class="block py-2 px-3 text-white font-medium hover:text-yellow-300 transition duration-500">
+                                Beranda
+                            </a>
+                            <ul
+                                class="absolute bg-white text-gray-900 rounded-md shadow-lg py-2 mt-1 z-10 w-48 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 transform scale-95 group-hover:scale-100 origin-top-right">
+                                <li><a href="/index.html"
+                                        class="block py-2 px-4 hover:bg-gray-200 transition duration-200">HOME</a></li>
+                                <li><a href="/companyprofile.html"
+                                        class="block py-2 px-4 hover:bg-gray-200 transition duration-200">Tentang
+                                        Kami</a></li>
+                            </ul>
+                        </li>
+                        <li><a href="#news"
+                                class="block py-2 px-3 text-white font-medium hover:text-yellow-300 transition duration-500">News</a>
+                        </li>
+                        <li><a href="#events"
+                                class="block py-2 px-3 text-white font-medium hover:text-yellow-300 transition duration-500">Event</a>
+                        </li>
+                        <li><a href="/catalog.html"
+                                class="block py-2 px-3 text-white font-medium hover:text-yellow-300 transition duration-500">Katalog</a>
+                        </li>
+                    </ul>
+                </div>
+
+                <div
+                    class="flex flex-col md:flex-row items-center gap-4 md:gap-6 ml-auto mt-4 md:mt-0 w-full md:w-auto">
+                    <form class="flex w-full md:w-auto navbar-search-form" role="search">
+                        <input
+                            class="search-input py-2 px-4 rounded-full mr-2 outline-none focus:ring-2 focus:ring-white focus:border-transparent w-full md:w-48"
+                            type="search" placeholder="Cari..." aria-label="Search">
+                        <button
+                            class="bg-white text-[#0D5C66] px-4 py-2 rounded-full font-semibold hover:bg-gray-200 transition duration-200 flex-shrink-0"
+                            type="submit">Cari</button>
+                    </form>
+
+                    <div class="relative group">
+                        <button
+                            class="flex items-center gap-2 text-white font-medium px-3 py-2 rounded-md hover:bg-white/10 transition duration-200"
+                            type="button" aria-expanded="false" aria-haspopup="true">
+                            <i class="fas fa-user-circle text-xl"></i> Profil
+                        </button>
+                        <ul
+                            class="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-10 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 transform scale-95 group-hover:scale-100 origin-top-right">
+                            <li><a class="block px-4 py-2 text-gray-800 hover:bg-gray-100"
+                                    href="/dashboardUser.html">Dashboard</a></li>
+                            <li><a class="block px-4 py-2 text-gray-800 hover:bg-gray-100" href="/login.html">Login</a>
+                            </li>
+                            <li>
+                                <hr class="border-t border-gray-200 my-1">
+                            </li>
+                            <li><a class="block px-4 py-2 text-red-600 hover:bg-gray-100" href="#">Keluar</a></li>
+                        </ul>
+                    </div>
+
+                    <a href="https://web.pln.co.id/" target="_blank"
+                        class="flex items-center gap-2 text-white font-medium px-3 py-2 rounded-md hover:bg-white/10 transition duration-200">
+                        <img src="/mleb_foto/logo-pln-removebg-preview.png" alt="Logo PLN" class="w-20 h-auto">
+                    </a>
+                </div>
+            </div>
+        </nav>
+
+
+        <div id="mobile-nav-menu"
+            class="fixed top-0 right-0 w-3/4 h-full bg-white shadow-lg z-40 transform translate-x-full transition-transform duration-300 ease-in-out">
+            <div class="p-6 flex flex-col items-start gap-4">
+                <button id="close-menu-btn" class="text-gray-600 text-3xl self-end"
+                    aria-label="Tutup menu navigasi">×</button>
+                <ul class="flex flex-col gap-4 w-full text-lg font-semibold">
+                    <li><a href="#beranda" class="block py-2 text-gray-800 hover:text-blue-500">Beranda</a></li>
+                    <li><a href="#room-results" class="block py-2 text-gray-800 hover:text-blue-500">Kamar</a></li>
+                    <li><a href="#catalog" class="block py-2 text-gray-800 hover:text-blue-500">Katalog</a></li>
+                    <li><a href="#kontak" class="block py-2 text-gray-800 hover:text-blue-500">Kontak</a></li>
+                </ul>
+            </div>
+        </div>
+        <div id="mobile-nav-overlay"
+            class="hidden fixed top-0 left-0 w-full h-full bg-black/50 z-30 transition-opacity duration-300 opacity-0">
+        </div>
+
+        <!-- hero section -->
+        <section id="beranda" class="hero relative w-full h-[600px] overflow-hidden">
+            <div id="hero-carousel-container" class="absolute inset-0">
+            </div>
+
+            <div class="hero-overlay"></div>
+
+            <div class="hero-content-wrapper max-w-5xl mx-auto px-4 text-white">
+                <div class="text-center p-6 bg-black bg-opacity-30 rounded-lg">
+                    <h1 id="hero-title" class="text-4xl sm:text-5xl lg:text-6xl font-extrabold mb-4 leading-tight"></h1>
+                    <p id="hero-subtitle" class="text-lg sm:text-xl mb-8 max-w-3xl mx-auto opacity-90"></p>
+                    <a href="#features"
+                        class="inline-block bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-8 rounded-full transition duration-300 transform hover:scale-105 shadow-lg">Jelajahi
+                        Sekarang</a>
+                </div>
+            </div>
+
+            <button id="hero-prev-btn" aria-label="Previous slide"
+                class="absolute left-4 top-1/2 -translate-y-1/2 bg-white/30 text-white p-3 rounded-full hover:bg-white/50 transition duration-300 z-10 text-xl md:text-2xl">
+                <i class="fas fa-chevron-left"></i>
+            </button>
+            <button id="hero-next-btn" aria-label="Next slide"
+                class="absolute right-4 top-1/2 -translate-y-1/2 bg-white/30 text-white p-3 rounded-full hover:bg-white/50 transition duration-300 z-10 text-xl md:text-2xl">
+                <i class="fas fa-chevron-right"></i>
+            </button>
+
+            <div id="hero-indicators"
+                class="absolute bottom-6 left-0 right-0 flex justify-center items-center space-x-3 z-10">
+            </div>
+            <div class="business-travel-checkbox max-w-5xl mx-auto mt-4 px-2 z-20 relative">
+                <input type="checkbox" id="newsletter" class="mr-2">
+                <label for="newsletter" class="text-white text-opacity-80 text-sm">Daftar untuk promo dan event
+                    terbaru</label>
+            </div>
+        </section>
+
+        <main class="w-full max-w-7xl mx-auto px-4">
+            <section
+                class="booking-card bg-white p-8 md:p-12 rounded-3xl shadow-2xl border border-gray-100 transition-transform duration-300 hover:scale-[1.01]">
+                <h2 class="text-3xl font-extrabold text-gray-800 mb-8 text-center">Temukan Penawaran Menarik Dari Kami
+                </h2>
+                <form id="search-form" aria-labelledby="search-heading">
+                    <h3 id="search-heading" class="sr-only">Formulir Pencarian Penawaran</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                        <div class="form-group">
+                            <label for="checkin" class="block font-semibold mb-2 text-gray-700">Tanggal Check-in</label>
+                            <input type="datetime-local" id="checkin" name="checkin"
+                                class="w-full p-3 border border-gray-300 rounded-lg focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-colors duration-200"
+                                required aria-required="true">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="checkout" class="block font-semibold mb-2 text-gray-700">Tanggal
+                                Check-out</label>
+                            <input type="datetime-local" id="checkout" name="checkout"
+                                class="w-full p-3 border border-gray-300 rounded-lg focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-colors duration-200"
+                                required aria-required="true">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="guests" class="block font-semibold mb-2 text-gray-700">Jumlah Tamu</label>
+                            <input type="number" id="guests" name="guests" min="1" value="1"
+                                class="w-full p-3 border border-gray-300 rounded-lg focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-colors duration-200"
+                                required aria-required="true">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="ticket-type" class="block font-semibold mb-2 text-gray-700">Jenis Tiket</label>
+                            <select id="ticket-type" name="ticket-type"
+                                class="w-full p-3 border border-gray-300 rounded-lg focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-colors duration-200">
+                                <option value="all">Semua Tipe</option>
+                                <option value="room">Ruangan</option>
+                                <option value="facilities">Fasilitas</option>
+                                <option value="program">Program</option>
+                            </select>
+                        </div>
+                    </div>
+                    <button type="submit" id="submit-btn"
+                        class="w-full py-4 mt-8 rounded-full font-semibold text-xl flex items-center justify-center gap-2 bg-gradient-to-r from-blue-500 to-blue-600 text-white shadow-lg hover:from-blue-600 hover:to-blue-700 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                            xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                        </svg>
+                        Cari Sekarang
+                    </button>
+                </form>
+            </section>
+
+            <div id="message-modal"
+                class="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center hidden"
+                aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="modal-title"
+                aria-describedby="modal-message">
+                <div
+                    class="bg-white rounded-xl shadow-2xl p-8 max-w-sm w-full relative transform transition-transform duration-300 scale-95">
+                    <button
+                        class="absolute top-4 right-4 text-gray-400 hover:text-gray-600 transition-colors duration-200"
+                        id="close-message-modal-btn" aria-label="Tutup">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                            xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M6 18L18 6M6 6l12 12"></path>
+                        </svg>
+                    </button>
+                    <h4 id="modal-title" class="text-xl font-bold text-gray-800 mb-4">Informasi</h4>
+                    <p id="modal-message" class="text-gray-600 font-medium"></p>
+                    <button id="modal-close-button"
+                        class="mt-6 px-6 py-2 bg-blue-500 text-white rounded-full hover:bg-blue-600 transition-colors duration-200 w-full font-semibold">Tutup</button>
+                </div>
+            </div>
+
+            <div id="booking-modal"
+                class="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center hidden" role="dialog"
+                aria-modal="true" aria-labelledby="booking-modal-title">
+                <div
+                    class="bg-white rounded-3xl shadow-2xl p-8 md:p-10 max-w-4xl w-full relative transform scale-95 opacity-0 transition-all duration-300 ease-in-out flex flex-col max-h-full">
+                    <button id="booking-close-btn"
+                        class="absolute top-4 right-4 text-gray-400 hover:text-gray-600 transition-colors">
+                        <i class="fas fa-times text-xl"></i>
+                    </button>
+                    <h3 id="booking-modal-title" class="text-3xl font-bold text-center mb-6 text-gray-800">Konfirmasi
+                        Pesanan Anda</h3>
+
+                    <div id="booking-details-content" class="flex-1 overflow-y-auto pr-2 custom-scrollbar">
+                    </div>
+
+                    <div class="mt-8 flex justify-between gap-4 flex-shrink-0">
+                        <button id="cancel-booking-btn"
+                            class="flex-1 py-3 px-6 bg-gray-200 text-gray-700 rounded-full font-semibold hover:bg-gray-300 transition-colors">Batal</button>
+                        <button id="confirm-booking-btn"
+                            class="flex-1 py-3 px-6 bg-blue-600 text-white rounded-full font-semibold hover:bg-blue-700 transition-colors">Konfirmasi</button>
+                    </div>
+                </div>
+            </div>
+
+            <div id="status-modal"
+                class="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center hidden" role="dialog"
+                aria-modal="true" aria-labelledby="status-modal-title">
+                <div
+                    class="bg-white rounded-3xl shadow-2xl p-8 max-w-sm w-full text-center relative transform scale-95 opacity-0 transition-all duration-300 ease-in-out">
+                    <div id="status-icon" class="flex justify-center mb-4">
+                    </div>
+                    <h3 id="status-title" class="text-2xl font-bold mb-2"></h3>
+                    <p id="status-message" class="text-gray-600 mb-6"></p>
+                    <button id="status-close-btn"
+                        class="w-full py-3 font-semibold rounded-full transition-colors"></button>
+                </div>
+            </div>
+
+            <div id="results-section" class="hidden">
+                <h2 class="text-3xl font-bold text-gray-800 mb-6">Hasil Pencarian</h2>
+                <div id="results-content" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                </div>
+            </div>
+            </div>
+        </main>
+
+        <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                // --- Variabel dan Elemen DOM ---
+                const searchForm = document.getElementById('search-form');
+                const checkinInput = document.getElementById('checkin');
+                const checkoutInput = document.getElementById('checkout');
+                const guestsInput = document.getElementById('guests');
+                const ticketTypeSelect = document.getElementById('ticket-type');
+                const resultsSection = document.getElementById('results-section');
+                const resultsContent = document.getElementById('results-content');
+                const submitBtn = document.getElementById('submit-btn');
+
+                const bookingModal = document.getElementById('booking-modal');
+                const bookingDetailsContent = document.getElementById('booking-details-content');
+                const confirmBookingBtn = document.getElementById('confirm-booking-btn');
+                const cancelBookingBtn = document.getElementById('cancel-booking-btn');
+                const bookingCloseBtn = document.getElementById('booking-close-btn');
+
+                const statusModal = document.getElementById('status-modal');
+                const statusIcon = document.getElementById('status-icon');
+                const statusTitle = document.getElementById('status-title');
+                const statusMessage = document.getElementById('status-message');
+                const statusCloseBtn = document.getElementById('status-close-btn');
+
+                // Data simulasi untuk hasil pencarian
+                const experiences = [
+                    // Hotel mleb
+                    { id: 1, name: "Penginapan Listrik", description: "Penginapan Berjumlah 12 kamar dengan kapasistas total 24orang (1 kamar= 2 twin bed).", type: "Hotel", capacity: 24, price: 400000, priceDisplay: "Rp 400.00 / Room", image: "/catalog_img/penginapan/penginapan_listrik/wisma listrik 14.jpg" },
+                    { id: 2, name: "Penginapan Energi", description: "Penginapan Energi dengan kapasitas tolatal 54 orang (1 kamar = 6 single bed).", type: "Hotel", capacity: 54, price: 975000, priceDisplay: "Rp 975.000 / Room", image: "/catalog_img/penginapan/penginapan_energi/wisma energi.jpg" },
+                    { id: 3, name: "Penginapan Energi (Barak)", description: "Penginapan Berjumlah 1 kamar barak dengan kapasitas total 23 Orang (1 kamar = 23 single bed)", type: "hotel", capacity: 23, price: 2875000, priceDisplay: "Rp 2.875.000 / Room", image: "/catalog_img/penginapan/penginapan_energi_barak/WISMA ENERGI 9 (1).jpg" },
+                    { id: 4, name: "Rumah Energi Baru", description: "Penginapan berjumlah 2 kamar dengan kapasitas total 4 orang (1 kamar = 2 singel bed) (1 kamar = 1 doble bed)", type: "Hotel", capacity: 4, price: 950000, priceDisplay: "Rp 950.000 / Unit", image: "/catalog_img/penginapan/penginapan_energi_baru/REB 5.jpg" },
+
+                    // ruangan mleb
+                    { id: 5, name: "Ruang volt", description: "Fasilitas ruang kelas/rapat untuk meeting dengan kapasitas total 100 orang.", type: "Ruangan", capacity: 100, price: 1500000, priceDisplay: "Rp 1.500.000", image: "/catalog_img/ruangan/ruangan volt/Ruang Volt 15.jpg" },
+                    { id: 6, name: "Ruang Ampere", description: "Fasilitas ruang kelas/rapat untuk meeting dengan kapasitas total 40 orang.", type: "Ruangan", capacity: 40, price: 1500000, priceDisplay: "Rp 1.500.000", image: "/catalog_img/ruangan/ruangan ampere/Ruang Ampere 7.jpg" },
+                    { id: 7, name: "Ruang Ohm", description: "Fasilitas ruang kelas/rapat untuk meeting dengan kapasitas total 40 orang.", type: "Ruangan", capacity: 30, price: 950000, priceDisplay: "Rp 950.000", image: "/catalog_img/ruangan/ruangan ampere/Ruang Ampere 7.jpg" },
+                    { id: 8, name: "Ruang Tesla", description: "Fasilitas ruang kelas/rapat untuk meeting dengan kapasitas total 40 orang.", type: "Ruangan", capacity: 30, price: 950.000, priceDisplay: "Rp 950.000", image: "/catalog_img/ruangan/ruangan ampere/Ruang Ampere 7.jpg" },
+                    { id: 9, name: "Ruang Kwh", description: "Fasilitas ruang kelas/rapat untuk meeting dengan kapasitas total 40 orang.", type: "Ruangan", capacity: 35, price: 950000, priceDisplay: "Rp 950.000", image: "/catalog_img/ruangan/ruangan ampere/Ruang Ampere 7.jpg" },
+                    { id: 10, name: "Ruang Inspiring", description: "Fasilitas ruang kelas/rapat untuk meeting dengan kapasitas total 40 orang.", type: "Ruangan", capacity: 45, price: 1500000, priceDisplay: "Rp 1.500.000", image: "/catalog_img/ruangan/ruangan ampere/Ruang Ampere 7.jpg" },
+                    { id: 11, name: "Ruang Explore", description: "Fasilitas ruang kelas/rapat untuk meeting dengan kapasitas total 40 orang.", type: "Ruangan", capacity: 45, price: 1500000, priceDisplay: "Rp 1.500.000", image: "/catalog_img/ruangan/ruangan ampere/Ruang Ampere 7.jpg" },
+
+                    // fasilitas mleb
+                    { id: 12, name: "Taman Tengah", description: "Deskripsi Taman Tengah", type: "Fasilitas", capacity: 100, price: 500000, priceDisplay: "Rp 500.000", image: "/catalog_img/fasilitas/fasilitas_a.jpg" },
+                    { id: 13, name: "Taman Belakang", description: "Deskripsi Taman Belakang", type: "Fasilitas", capacity: 50, price: 375000, priceDisplay: "Rp 375.000", image: "/catalog_img/fasilitas/fasilitas_b.jpg" },
+                    { id: 14, name: "Lapangan Olahraga", description: "Deskripsi Lapangan Olahraga", type: "Fasilitas", capacity: 30, price: 750000, priceDisplay: "Rp 750.000", image: "/catalog_img/fasilitas/fasilitas_c.jpg" },
+                    { id: 15, name: "Aktivitas Olahraga", description: "Deskripsi Aktivitas Olahraga", type: "Fasilitas", capacity: 100, price: 100000, priceDisplay: "Rp 100.000", image: "/catalog_img/fasilitas/fasilitas_a.jpg" },
+                    { id: 16, name: "Salasar Faraday", description: "Deskripsi Salasar Faraday", type: "Fasilitas", capacity: 50, price: 1150000, priceDisplay: "Rp 1.150.000", image: "/catalog_img/fasilitas/fasilitas_b.jpg" },
+                    { id: 17, name: "Ruang Studio", description: "Deskripsi Ruang Studio", type: "Fasilitas", capacity: 10, price: 650000, priceDisplay: "Rp 650.000", image: "/catalog_img/fasilitas/fasilitas_c.jpg" },
+
+                ];
+
+                let currentBookingDetails = null;
+
+                // --- Fungsi Bantuan (Helper Functions) ---
+                function formatDate(date) {
+                    return new Date(date).toLocaleString('id-ID', {
+                        year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit'
+                    });
+                }
+
+                function capitalizeFirstLetter(string) {
+                    return string.charAt(0).toUpperCase() + string.slice(1);
+                }
+
+                // --- Manajemen Modal ---
+                function showModal(modalElement) {
+                    const modalContent = modalElement.querySelector('.transform');
+                    modalElement.classList.remove('hidden');
+                    setTimeout(() => {
+                        modalContent.classList.remove('scale-95', 'opacity-0');
+                        modalContent.classList.add('scale-100', 'opacity-100');
+                    }, 10);
+                }
+
+                function hideModal(modalElement) {
+                    const modalContent = modalElement.querySelector('.transform');
+                    modalContent.classList.remove('scale-100', 'opacity-100');
+                    modalContent.classList.add('scale-95', 'opacity-0');
+
+                    setTimeout(() => {
+                        modalElement.classList.add('hidden');
+                    }, 300);
+                }
+
+                function showStatusModal(type, title, message) {
+                    statusIcon.innerHTML = '';
+                    if (type === 'success') {
+                        statusIcon.innerHTML = `<svg class="w-20 h-20 text-green-500 animate-pulse" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>`;
+                        statusTitle.className = 'text-2xl font-bold text-green-600';
+                        statusCloseBtn.className = 'w-full mt-4 py-3 bg-green-500 text-white rounded-lg font-semibold hover:bg-green-600 transition-colors';
+                    } else {
+                        statusIcon.innerHTML = `<svg class="w-20 h-20 text-red-500 animate-shake" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>`;
+                        statusTitle.className = 'text-2xl font-bold text-red-600';
+                        statusCloseBtn.className = 'w-full mt-4 py-3 bg-red-500 text-white rounded-lg font-semibold hover:bg-red-600 transition-colors';
+                    }
+                    statusTitle.textContent = title;
+                    statusMessage.innerHTML = message;
+                    showModal(statusModal);
+                }
+
+                function showBookingModal(details) {
+                    currentBookingDetails = details;
+
+                    // Cek jika harga per orang atau per jam
+                    const isPricePerGuest = details.type === 'program' || details.type === 'facilities';
+                    const subtotal = isPricePerGuest ? details.price * details.guests : details.price;
+                    const serviceFee = subtotal * 0.05;
+                    const total = subtotal + serviceFee;
+
+                    const subtotalDisplay = `Rp ${subtotal.toLocaleString('id-ID')}`;
+                    const serviceFeeDisplay = `Rp ${serviceFee.toLocaleString('id-ID')}`;
+                    const totalDisplay = `Rp ${total.toLocaleString('id-ID')}`;
+
+                    const priceLabel = isPricePerGuest ? `${details.priceDisplay} per orang` : `${details.priceDisplay} per jam`;
+                    const guestLabel = isPricePerGuest ? `Jumlah Tamu` : `Jumlah Jam`;
+                    const guestValue = isPricePerGuest ? `${details.guests} orang` : `${details.guests} jam`;
+
+                    bookingDetailsContent.innerHTML = `
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 lg:gap-6 p-4">
+                <div class="space-y-4">
+                    <div class="bg-gray-100 p-3 rounded-xl flex items-center gap-3">
+                        <img src="${details.image}" alt="${details.name}" class="w-16 h-16 object-cover rounded-lg">
+                        <div>
+                            <h4 class="font-bold text-lg text-gray-800">${details.name}</h4>
+                            <p class="text-gray-600 text-xs truncate">${details.description}</p>
+                        </div>
+                    </div>
+                    
+                    <div class="grid grid-cols-2 gap-3 text-xs">
+                        <div class="flex items-center gap-2 bg-blue-50 p-2 rounded-lg border border-blue-200">
+                            <i class="fas fa-ticket-alt text-blue-500"></i>
+                            <div>
+                                <p class="font-semibold text-blue-700">Tipe</p>
+                                <p class="text-gray-600">${capitalizeFirstLetter(details.type)}</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-2 bg-blue-50 p-2 rounded-lg border border-blue-200">
+                            <i class="fas fa-users text-blue-500"></i>
+                            <div>
+                                <p class="font-semibold text-blue-700">${guestLabel}</p>
+                                <p class="text-gray-600">${guestValue}</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-2 bg-blue-50 p-2 rounded-lg border border-blue-200">
+                            <i class="fas fa-calendar-alt text-blue-500"></i>
+                            <div>
+                                <p class="font-semibold text-blue-700">Check-in</p>
+                                <p class="text-gray-600 text-xs">${formatDate(details.checkin)}</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-2 bg-blue-50 p-2 rounded-lg border border-blue-200">
+                            <i class="fas fa-calendar-check text-blue-500"></i>
+                            <div>
+                                <p class="font-semibold text-blue-700">Check-out</p>
+                                <p class="text-gray-600 text-xs">${formatDate(details.checkout)}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flex-1">
+                    <div class="bg-gray-800 text-white p-4 rounded-xl shadow-xl h-full flex flex-col justify-between">
+                        <h5 class="font-bold text-xl mb-4">Ringkasan Pembayaran</h5>
+                        <div class="flex-1 space-y-2 text-gray-200">
+                            <div class="flex justify-between text-sm">
+                                <span>${priceLabel}</span>
+                                <span>${subtotalDisplay}</span>
+                            </div>
+                            <div class="flex justify-between text-sm">
+                                <span>Biaya Layanan (5%)</span>
+                                <span>${serviceFeeDisplay}</span>
+                            </div>
+                        </div>
+                        <div class="mt-4 pt-3 border-t border-gray-600 flex justify-between items-center text-xl font-bold">
+                            <span>Total</span>
+                            <span class="text-white">${totalDisplay}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+                    showModal(bookingModal);
+                }
+
+                // --- Fungsionalitas Halaman Utama ---
+                function renderResults(results) {
+                    resultsContent.innerHTML = '';
+                    if (results.length === 0) {
+                        resultsContent.innerHTML = `
+                <div class="col-span-full text-center py-10 bg-gray-100 rounded-lg shadow-inner">
+                    <p class="text-xl text-gray-500 font-semibold mb-2">
+                        <i class="fas fa-exclamation-circle mr-2"></i> Mohon maaf, tidak ada hasil yang ditemukan.
+                    </p>
+                    <p class="text-gray-400">Coba ubah kriteria pencarian Anda.</p>
+                </div>
+            `;
+                    } else {
+                        results.forEach(item => {
+                            resultsContent.innerHTML += createResultCard(item);
+                        });
+                        document.querySelectorAll('.book-now-btn').forEach(button => {
+                            button.addEventListener('click', () => {
+                                const itemId = parseInt(button.dataset.id);
+                                const selectedItem = experiences.find(exp => exp.id === itemId);
+
+                                if (selectedItem) {
+                                    const bookingDetails = {
+                                        ...selectedItem,
+                                        checkin: checkinInput.value,
+                                        checkout: checkoutInput.value,
+                                        guests: guestsInput.value,
+                                    };
+                                    showBookingModal(bookingDetails);
+                                }
+                            });
+                        });
+                    }
+                    resultsSection.classList.remove('hidden');
+                    resultsSection.scrollIntoView({ behavior: 'smooth' });
+                }
+
+                function createResultCard(item) {
+                    return `
+            <div class="bg-white rounded-xl shadow-lg overflow-hidden transform transition-transform duration-300 hover:scale-[1.03] hover:shadow-2xl group">
+                <img src="${item.image}" alt="${item.name}" class="w-full h-48 object-cover">
+                <div class="p-6">
+                    <span class="inline-block bg-blue-100 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded-full mb-2">${capitalizeFirstLetter(item.type)}</span>
+                    <h4 class="font-bold text-xl text-gray-800 mb-2">${item.name}</h4>
+                    <p class="text-gray-600 text-sm mb-4">${item.description}</p>
+                    <div class="flex justify-between items-center text-lg font-semibold text-gray-900">
+                        <span>${item.priceDisplay}</span>
+                        <span class="flex items-center text-gray-500">
+                            <i class="fas fa-users mr-1"></i> ${item.capacity}
+                        </span>
+                    </div>
+                    <button class="mt-4 w-full py-2 bg-blue-500 text-white rounded-full font-semibold hover:bg-blue-600 transition-colors duration-200 book-now-btn" data-id="${item.id}">Pesan Sekarang</button>
+                </div>
+            </div>
+        `;
+                }
+
+                function createDetailCard(label, value) {
+                    return `
+            <div class="bg-gray-50 p-3 rounded-lg">
+                <p class="font-semibold text-gray-700">${label}</p>
+                <p class="text-gray-500">${value}</p>
+            </div>
+        `;
+                }
+
+                // --- Event Listeners ---
+                searchForm.addEventListener('submit', function (event) {
+                    event.preventDefault();
+
+                    const checkinDate = new Date(checkinInput.value);
+                    const checkoutDate = new Date(checkoutInput.value);
+                    const guests = parseInt(guestsInput.value);
+                    const ticketType = ticketTypeSelect.value;
+
+                    if (checkoutDate <= checkinDate) {
+                        showStatusModal('error', 'Tanggal Tidak Valid', 'Tanggal check-out harus setelah tanggal check-in.');
+                        return;
+                    }
+                    if (guests <= 0 || isNaN(guests)) {
+                        showStatusModal('error', 'Jumlah Tamu Tidak Valid', 'Jumlah tamu harus lebih dari 0.');
+                        return;
+                    }
+
+                    submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin animate-spin-custom"></i> Mencari...';
+                    submitBtn.disabled = true;
+                    resultsSection.classList.add('hidden');
+
+                    setTimeout(() => {
+                        const filteredResults = experiences.filter(item => {
+                            const matchesType = ticketType === 'all' || item.type === ticketType;
+                            const matchesGuests = item.capacity >= guests;
+                            return matchesType && matchesGuests;
+                        });
+
+                        renderResults(filteredResults);
+
+                        submitBtn.innerHTML = '<i class="fas fa-search text-white mr-2"></i> Cari Sekarang';
+                        submitBtn.disabled = false;
+                    }, 1500);
+                });
+
+                cancelBookingBtn.addEventListener('click', () => hideModal(bookingModal));
+                bookingCloseBtn.addEventListener('click', () => hideModal(bookingModal));
+                statusCloseBtn.addEventListener('click', () => hideModal(statusModal));
+
+                // Perubahan di sini: Mengarahkan ke halaman pembayaran
+                confirmBookingBtn.addEventListener('click', () => {
+                    confirmBookingBtn.innerHTML = '<i class="fas fa-spinner fa-spin animate-spin-custom"></i> Memproses...';
+                    confirmBookingBtn.disabled = true;
+
+                    setTimeout(() => {
+                        if (currentBookingDetails) {
+                            // Simpan detail pesanan ke localStorage
+                            localStorage.setItem('currentBookingDetails', JSON.stringify(currentBookingDetails));
+                            // Arahkan pengguna ke halaman pembayaran
+                            window.location.href = 'payment.html';
+                        } else {
+                            // Jika data hilang, tampilkan pesan error
+                            hideModal(bookingModal);
+                            showStatusModal('error', 'Kesalahan Data', 'Data pesanan tidak ditemukan. Silakan coba lagi.');
+                        }
+                        confirmBookingBtn.innerHTML = 'Konfirmasi';
+                        confirmBookingBtn.disabled = false;
+                    }, 1000); // Waktu tunda dipersingkat untuk transisi yang lebih cepat
+                });
+
+                function setMinDates() {
+                    const now = new Date();
+                    const minDateString = now.toISOString().slice(0, 16);
+                    checkinInput.min = minDateString;
+                    checkoutInput.min = minDateString;
+                }
+                setMinDates();
+
+                checkinInput.addEventListener('change', function () {
+                    if (checkinInput.value) {
+                        checkoutInput.min = checkinInput.value;
+                    }
+                });
+            });
+
+        </script>
+
+        <!-- Mleb Partners Section -->
+        <section id="partners" class="py-10 text-white" style="background: white">
+            <div class="container mx-auto px-6 text-center mb-12">
+                <div class="animate__animated animate__fadeInUp">
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-10 mb-20">
+
+                        <!-- MLEB Partners -->
+                        <div>
+                            <div class="text-center mb-10">
+                                <h2
+                                    class="text-4xl font-extrabold text-purple-500 flex justify-center items-center gap-2">
+                                    <h2 class="text-4xl font-bold text-indigo-700 mb-4">MLEB Partners</h2>
+                                    <p class="text-gray-600">Kami Berkolaborasi Dengan Institusi Terpercaya</p>
+                                    <hr class="border-t-2 border-black w-100 mx-auto mt-4">
+                            </div>
+                            <div class="grid grid-cols-2 sm:grid-cols-5 gap-4">
+
+
+                                <!-- Partner Card -->
+                                <div class="bg-transparent p-100 w-100 rounded-lg shadow-md p-2 max-w-[140px] 
+     hover:shadow-xl transition duration-300 hover:shadow-indigo-500/70 
+     hover:ring-2 hover:ring-indigo-300 hover:scale-105 hover:-translate-y-5">
+                                    <img src="/foto_partner/TMII.png" alt="TMII"
+                                        class="h-12 mx-auto object-contain transition duration-300">
+                                </div>
+
+                                <div class="bg-transparent rounded-lg shadow-md p-2 max-w-[140px] 
+     hover:shadow-xl transition duration-300 hover:shadow-indigo-500/70 
+     hover:ring-2 hover:ring-indigo-300 hover:scale-105 hover:-translate-y-5">
+                                    <img src="/foto_partner/dinas-pendidikan.png" alt="TMII"
+                                        class="h-12 mx-auto object-contain transition duration-300">
+                                </div>
+                                <div class="bg-transparent rounded-lg shadow-md p-2 max-w-[140px] 
+     hover:shadow-xl transition duration-300 hover:shadow-indigo-500/70 
+     hover:ring-2 hover:ring-indigo-300 hover:scale-105 hover:-translate-y-5">
+                                    <img src="/foto_partner/JTA.png" alt="TMII"
+                                        class="h-12 mx-auto object-contain transition duration-300">
+                                </div>
+                                <div class="bg-transparent rounded-lg shadow-md p-2 max-w-[140px] 
+     hover:shadow-xl transition duration-300 hover:shadow-indigo-500/70 
+     hover:ring-2 hover:ring-indigo-300 hover:scale-105 hover:-translate-y-5">
+                                    <img src="/foto_partner/jumpstart-logo.png" alt="TMII"
+                                        class="h-12 mx-auto object-contain transition duration-300">
+                                </div>
+                                <div class="bg-transparent rounded-lg shadow-md p-2 max-w-[140px] 
+     hover:shadow-xl transition duration-300 hover:shadow-indigo-500/70 
+     hover:ring-2 hover:ring-indigo-300 hover:scale-105 hover:-translate-y-5">
+                                    <img src="/foto_partner/igtki.png" alt="TMII"
+                                        class="h-12 mx-auto object-contain transition duration-300">
+                                </div>
+                                <div class="bg-transparent rounded-lg shadow-md p-2 max-w-[140px] 
+     hover:shadow-xl transition duration-300 hover:shadow-indigo-500/70 
+     hover:ring-2 hover:ring-indigo-300 hover:scale-105 hover:-translate-y-5">
+                                    <img src="/foto_partner/paramita-jaya.png" alt="TMII"
+                                        class="h-12 mx-auto object-contain transition duration-300">
+                                </div>
+                                <div class="bg-transparent rounded-lg shadow-md p-2 max-w-[140px] 
+     hover:shadow-xl transition duration-300 hover:shadow-indigo-500/70 
+     hover:ring-2 hover:ring-indigo-300 hover:scale-105 hover:-translate-y-5">
+                                    <img src="/foto_partner/PUTRI.png" alt="TMII"
+                                        class="h-12 mx-auto object-contain transition duration-300">
+                                </div>
+                                <div class="bg-transparent rounded-lg shadow-md p-2 max-w-[140px] 
+     hover:shadow-xl transition duration-300 hover:shadow-indigo-500/70 
+     hover:ring-2 hover:ring-indigo-300 hover:scale-105 hover:-translate-y-5">
+                                    <img src="/foto_partner/HC.png" alt="TMII"
+                                        class="h-14 p-25 mx-auto object-contain transition duration-300">
+                                </div>
+                                <div class="bg-transparent rounded-lg shadow-md p-2 max-w-[140px] 
+     hover:shadow-xl transition duration-300 hover:shadow-indigo-500/70 
+     hover:ring-2 hover:ring-indigo-300 hover:scale-105 hover:-translate-y-5">
+                                    <img src="/foto_partner/aice.png" alt="TMII"
+                                        class="h-12 mx-auto object-contain transition duration-300">
+                                </div>
+                            </div>
+                        </div>
+
+
+                        <!-- Our Certifications -->
+                        <div>
+                            <div class="text-center mb-10">
+                                <h2
+                                    class="text-4xl font-extrabold text-purple-500 flex justify-center items-center gap-2">
+                                    <h2 class="text-4xl font-bold text-indigo-700 mb-4">MLEB Certification</h2>
+                                    <p class="text-gray-600">Pengakuan Resmi Atas Standar dan Kualitas Kami</p>
+                                    <hr class="border-t-2 border-black w-100 mx-auto mt-4">
+                            </div>
+                            <div class="grid grid-cols-2 sm:grid-cols-5 gap-4">
+
+                                <!-- Certification Card -->
+                                <div class="bg-transparent rounded-lg shadow-md p-2 max-w-[140px] 
+     hover:shadow-xl transition duration-300 hover:shadow-indigo-500/70 
+     hover:ring-2 hover:ring-indigo-300 hover:scale-105 hover:-translate-y-5 ">
+                                    <img src="/foto_certificat/14001-2005.png" alt="ISO 14001:2005"
+                                        class="h-12 mx-auto object-contain transition duration-300">
+                                </div>
+                                <div class="bg-transparent rounded-lg shadow-md p-2 max-w-[140px] 
+     hover:shadow-xl transition duration-300 hover:shadow-indigo-500/70 
+     hover:ring-2 hover:ring-indigo-300 hover:scale-105 hover:-translate-y-5">
+                                    <img src="/foto_certificat/9004.png" alt="ISO 9004"
+                                        class="h-12 mx-auto object-contain transition duration-300">
+                                </div>
+                                <div class="bg-transparent rounded-lg shadow-md p-2 max-w-[140px] 
+     hover:shadow-xl transition duration-300 hover:shadow-indigo-500/70 
+     hover:ring-2 hover:ring-indigo-300 hover:scale-105 hover:-translate-y-5">
+                                    <img src="/foto_certificat/logo-smk3.png" alt="ISO 9004"
+                                        class="h-12 mx-auto object-contain transition duration-300">
+                                </div>
+                                <div class="bg-transparent rounded-lg shadow-md p-2 max-w-[140px] 
+     hover:shadow-xl transition duration-300 hover:shadow-indigo-500/70 
+     hover:ring-2 hover:ring-indigo-300 hover:scale-105 hover:-translate-y-5">
+                                    <img src="/foto_certificat/pmi.png" alt="ISO 9004"
+                                        class="h-12 mx-auto object-contain transition duration-300">
+                                </div>
+                                <div class="bg-transparent rounded-lg shadow-md p-2 max-w-[140px] 
+     hover:shadow-xl transition duration-300 hover:shadow-indigo-500/70 
+     hover:ring-2 hover:ring-indigo-300 hover:scale-105 hover:-translate-y-5">
+                                    <img src="/foto_certificat/konsultan-iso-37001.png" alt="ISO 9004"
+                                        class="h-12 mx-auto object-contain transition duration-300">
+                                </div>
+                                <div class="bg-transparent rounded-lg shadow-md p-2 max-w-[140px] 
+     hover:shadow-xl transition duration-300 hover:shadow-indigo-500/70 
+     hover:ring-2 hover:ring-indigo-300 hover:scale-105 hover:-translate-y-5">
+                                    <img src="/foto_certificat/Konsultan-ISO-37001-2016-Sistem-Manajemen-Anti-Penyuapan.png"
+                                        alt="ISO 9004" class="h-12 mx-auto object-contain transition duration-300">
+                                </div>
+                                <div class="bg-transparent rounded-lg shadow-md p-2 max-w-[140px] 
+     hover:shadow-xl transition duration-300 hover:shadow-indigo-500/70 
+     hover:ring-2 hover:ring-indigo-300 hover:scale-105 hover:-translate-y-5">
+                                    <img src="/foto_certificat/museum-awards.png" alt="ISO 9004"
+                                        class="h-12 mx-auto object-contain transition duration-300">
+                                </div>
+                                <div class="bg-transparent rounded-lg shadow-md p-2 max-w-[140px] 
+     hover:shadow-xl transition duration-300 hover:shadow-indigo-500/70 
+     hover:ring-2 hover:ring-indigo-300 hover:scale-105 hover:-translate-y-5">
+                                    <img src="/foto_certificat/ISO-14001-Tahun-2015.png" alt="ISO 9004"
+                                        class="h-12 mx-auto object-contain transition duration-300">
+                                </div>
+                                <div class="bg-transparent rounded-lg shadow-md p-2 max-w-[140px] 
+     hover:shadow-xl transition duration-300 hover:shadow-indigo-500/70 
+     hover:ring-2 hover:ring-indigo-300 hover:scale-105 hover:-translate-y-5">
+                                    <img src="/foto_certificat/ISO-9001-2015.png" alt="ISO 9004"
+                                        class="h-12 mx-auto object-contain transition duration-300">
+                                </div>
+                                <div class="bg-transparent rounded-lg shadow-md p-2 max-w-[140px] 
+     hover:shadow-xl transition duration-300 hover:shadow-indigo-500/70 
+     hover:ring-2 hover:ring-indigo-300 hover:scale-105 hover:-translate-y-5">
+                                    <img src="/foto_certificat/CHSE.png" alt="ISO 9004"
+                                        class="h-12 mx-auto object-contain transition duration-300">
+                                </div>
+                                <div class="bg-transparent rounded-lg shadow-md p-2 max-w-[140px] 
+     hover:shadow-xl transition duration-300 hover:shadow-indigo-500/70 
+     hover:ring-2 hover:ring-indigo-300 hover:scale-105 hover:-translate-y-5">
+                                    <img src="/foto_certificat/dirjen-k3.png" alt="ISO 14001:2005"
+                                        class="h-12 mx-auto object-contain transition duration-300">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+        </section>
+
+
+        <!-- catalog section  -->
+        <section id="catalog" class="py-16" style="background: linear-gradient(to right, #00AFC1, #0D5C66);">
+            <div class="container mx-auto px-6 text-center mb-12">
+                <h2 class="text-4xl lg:text-5xl font-extrabold flex justify-center items-center gap-4 text-white">
+                    <i class="fas fa-bolt text-yellow-300"></i>
+                    <span class="text-white -to-r from-white to-gray-200">PROMO SPESIAL</span>
+                </h2>
+                <p class="mt-4 text-lg lg:text-xl text-white opacity-90">
+                    Jelajahi berbagai Penawaran dan Pengalaman Menarik dari Kami di Museum Listrik dan Energi Baru
+                    Terbarukan.
+                </p>
+            </div>
+            <div class="relative mt-12 overflow-hidden">
+                <div id="catalog-carousel"
+                    class="carousel-container flex overflow-x-auto scroll-smooth snap-x snap-mandatory gap-1 px-10 py-4 md:px-8 lg:px-50">
+                </div>
+                <button id="prevCatalogBtn" aria-label="Previous catalog item"
+                    class="carousel-prev absolute left-2 md:left-4 top-1/2 -translate-y-1/2 bg-white/70 p-3 rounded-full shadow-lg hover:bg-white/90 transition duration-300 z-10 text-xl font-bold">
+                    &lt;
+                </button>
+                <button id="nextCatalogBtn" aria-label="Next catalog item"
+                    class="carousel-next absolute right-2 md:right-4 top-1/2 -translate-y-1/2 bg-white/70 p-3 rounded-full shadow-lg hover:bg-white/90 transition duration-300 z-10 text-xl font-bold">
+                    &gt;
+                </button>
+                <div id="catalog-indicators" class="flex justify-center items-center mt-8 space-x-3">
+                </div>
+            </div>
+        </section>
+
+
+        <!-- flip card section -->
+        <section id="events" class="py-20 bg-gray-100">
+            <div class="container mx-auto">
+                <div class="text-center mb-12">
+                    <h2 class="text-4xl font-bold text-indigo-700 mb-4">Event Terbaru</h2>
+                    <p class="text-gray-600">Jelajahi berbagai event menarik yang kami selenggarakan</p>
+                    <hr class="border-t-2 border-indigo-300 w-100 mx-auto mt-4">
+                </div>
+
+                <!-- Flip Card Container Horizontal -->
+                <div class="flex flex-wrap justify-center gap-4">
+
+                    <!-- Flip Card -->
+                    <div class="flip-card w-72 h-[420px]">
+                        <div
+                            class="flip-card-inner relative w-full h-full transition-transform duration-700 ease-in-out transform hover:rotate-y-180">
+
+                            <!-- Front -->
+                            <div
+                                class="flip-card-front absolute w-full h-full backface-hidden bg-white p-6 rounded-xl shadow-lg flex flex-col justify-center items-center text-center">
+                                <img src="/event_mleb/Event 1.jpg" alt="Event" class="w-full h-auto rounded-lg mb-4">
+                                <h3 class="text-lg font-bold mb-2">Pameran Energi</h3>
+                                <p class="text-sm text-gray-600">Temukan teknologi terbaru dan interaktif seputar
+                                    kelistrikan</p>
+                            </div>
+
+                            <!-- Back -->
+                            <div
+                                class="flip-card-back absolute w-full h-full backface-hidden bg-indigo-600 text-white p-6 rounded-xl flex flex-col justify-center items-center text-center rotate-y-180">
+                                <h3 class="text-lg font-bold mb-2">Ayo Daftar Sekarang</h3>
+                                <p class="text-sm">Event edukatif dan menarik untuk semua kalangan — jangan lewatkan!
+                                </p>
+                                <a href="#register"
+                                    class="mt-4 bg-white text-indigo-600 px-4 py-2 rounded-full font-semibold hover:bg-yellow-300 transition">Daftar</a>
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <!-- Flip Card -->
+                    <div class="flip-card w-72 h-[420px]">
+                        <div
+                            class="flip-card-inner relative w-full h-full transition-transform duration-700 ease-in-out transform hover:rotate-y-180">
+
+                            <!-- Front -->
+                            <div
+                                class="flip-card-front absolute w-full h-full backface-hidden bg-white p-6 rounded-xl shadow-lg flex flex-col justify-center items-center text-center">
+                                <img src="/event_mleb/Event 2.jpg" alt="Event" class="w-full h-auto rounded-lg mb-4">
+                                <h3 class="text-lg font-bold mb-2">Pameran Energi</h3>
+                                <p class="text-sm text-gray-600">Temukan teknologi terbaru dan interaktif seputar
+                                    kelistrikan</p>
+                            </div>
+
+                            <!-- Back -->
+                            <div
+                                class="flip-card-back absolute w-full h-full backface-hidden bg-indigo-600 text-white p-6 rounded-xl flex flex-col justify-center items-center text-center rotate-y-180">
+                                <h3 class="text-lg font-bold mb-2">Ayo Daftar Sekarang</h3>
+                                <p class="text-sm">Event edukatif dan menarik untuk semua kalangan — jangan lewatkan!
+                                </p>
+                                <a href="#register"
+                                    class="mt-4 bg-white text-indigo-600 px-4 py-2 rounded-full font-semibold hover:bg-yellow-300 transition">Daftar</a>
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <!-- Flip Card -->
+                    <div class="flip-card w-72 h-[420px]">
+                        <div
+                            class="flip-card-inner relative w-full h-full transition-transform duration-700 ease-in-out transform hover:rotate-y-180">
+
+                            <!-- Front -->
+                            <div
+                                class="flip-card-front absolute w-full h-full backface-hidden bg-white p-6 rounded-xl shadow-lg flex flex-col justify-center items-center text-center">
+                                <img src="/event_mleb/event 3.jpg" alt="Event" class="w-full h-auto rounded-lg mb-4">
+                                <h3 class="text-lg font-bold mb-2">Pameran Energi</h3>
+                                <p class="text-sm text-gray-600">Temukan teknologi terbaru dan interaktif seputar
+                                    kelistrikan</p>
+                            </div>
+
+                            <!-- Back -->
+                            <div
+                                class="flip-card-back absolute w-full h-full backface-hidden bg-indigo-600 text-white p-6 rounded-xl flex flex-col justify-center items-center text-center rotate-y-180">
+                                <h3 class="text-lg font-bold mb-2">Ayo Daftar Sekarang</h3>
+                                <p class="text-sm">Event edukatif dan menarik untuk semua kalangan — jangan lewatkan!
+                                </p>
+                                <a href="#register"
+                                    class="mt-4 bg-white text-indigo-600 px-4 py-2 rounded-full font-semibold hover:bg-yellow-300 transition">Daftar</a>
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <!-- Flip Card -->
+                    <div class="flip-card w-72 h-[420px]">
+                        <div
+                            class="flip-card-inner relative w-full h-full transition-transform duration-700 ease-in-out transform hover:rotate-y-180">
+
+                            <!-- Front -->
+                            <div
+                                class="flip-card-front absolute w-full h-full backface-hidden bg-white p-6 rounded-xl shadow-lg flex flex-col justify-center items-center text-center">
+                                <img src="/event_mleb/Event 4.jpg" alt="Event" class="w-full h-auto rounded-lg mb-4">
+                                <h3 class="text-lg font-bold mb-2">Pameran Energi</h3>
+                                <p class="text-sm text-gray-600">Temukan teknologi terbaru dan interaktif seputar
+                                    kelistrikan</p>
+                            </div>
+
+                            <!-- Back -->
+                            <div
+                                class="flip-card-back absolute w-full h-full backface-hidden bg-indigo-600 text-white p-6 rounded-xl flex flex-col justify-center items-center text-center rotate-y-180">
+                                <h3 class="text-lg font-bold mb-2">Ayo Daftar Sekarang</h3>
+                                <p class="text-sm">Event edukatif dan menarik untuk semua kalangan — jangan lewatkan!
+                                </p>
+                                <a href="#register"
+                                    class="mt-4 bg-white text-indigo-600 px-4 py-2 rounded-full font-semibold hover:bg-yellow-300 transition">Daftar</a>
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <!-- Flip Card -->
+                    <div class="flip-card w-72 h-[420px]">
+                        <div
+                            class="flip-card-inner relative w-full h-full transition-transform duration-700 ease-in-out transform hover:rotate-y-180">
+
+                            <!-- Front -->
+                            <div
+                                class="flip-card-front absolute w-full h-full backface-hidden bg-white p-6 rounded-xl shadow-lg flex flex-col justify-center items-center text-center">
+                                <img src="/event_mleb/Belajar Seru.jpeg" alt="Event"
+                                    class="w-full h-auto rounded-lg mb-4">
+                                <h3 class="text-lg font-bold mb-2">Pameran Energi</h3>
+                                <p class="text-sm text-gray-600">Temukan teknologi terbaru dan interaktif seputar
+                                    kelistrikan</p>
+                            </div>
+
+                            <!-- Back -->
+                            <div
+                                class="flip-card-back absolute w-full h-full backface-hidden bg-indigo-600 text-white p-6 rounded-xl flex flex-col justify-center items-center text-center rotate-y-180">
+                                <h3 class="text-lg font-bold mb-2">Ayo Daftar Sekarang</h3>
+                                <p class="text-sm">Event edukatif dan menarik untuk semua kalangan — jangan lewatkan!
+                                </p>
+                                <a href="#register"
+                                    class="mt-4 bg-white text-indigo-600 px-4 py-2 rounded-full font-semibold hover:bg-yellow-300 transition">Daftar</a>
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <!-- Flip Card -->
+                    <div class="flip-card w-72 h-[420px]">
+                        <div
+                            class="flip-card-inner relative w-full h-full transition-transform duration-700 ease-in-out transform hover:rotate-y-180">
+
+                            <!-- Front -->
+                            <div
+                                class="flip-card-front absolute w-full h-full backface-hidden bg-white p-6 rounded-xl shadow-lg flex flex-col justify-center items-center text-center">
+                                <img src="/event_mleb/Pekan Lebaran.jpg" alt="Event"
+                                    class="w-full h-auto rounded-lg mb-4">
+                                <h3 class="text-lg font-bold mb-2">Pameran Energi</h3>
+                                <p class="text-sm text-gray-600">Temukan teknologi terbaru dan interaktif seputar
+                                    kelistrikan</p>
+                            </div>
+
+                            <!-- Back -->
+                            <div
+                                class="flip-card-back absolute w-full h-full backface-hidden bg-indigo-600 text-white p-6 rounded-xl flex flex-col justify-center items-center text-center rotate-y-180">
+                                <h3 class="text-lg font-bold mb-2">Ayo Daftar Sekarang</h3>
+                                <p class="text-sm">Event edukatif dan menarik untuk semua kalangan — jangan lewatkan!
+                                </p>
+                                <a href="#register"
+                                    class="mt-4 bg-white text-indigo-600 px-4 py-2 rounded-full font-semibold hover:bg-yellow-300 transition">Daftar</a>
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <!-- Flip Card -->
+                    <div class="flip-card w-72 h-[420px]">
+                        <div
+                            class="flip-card-inner relative w-full h-full transition-transform duration-700 ease-in-out transform hover:rotate-y-180">
+
+                            <!-- Front -->
+                            <div
+                                class="flip-card-front absolute w-full h-full backface-hidden bg-white p-6 rounded-xl shadow-lg flex flex-col justify-center items-center text-center">
+                                <img src="/event_mleb/Pekan Liburan Sekolah.jpg" alt="Event"
+                                    class="w-full h-auto rounded-lg mb-4">
+                                <h3 class="text-lg font-bold mb-2">Pameran Energi</h3>
+                                <p class="text-sm text-gray-600">Temukan teknologi terbaru dan interaktif seputar
+                                    kelistrikan</p>
+                            </div>
+
+                            <!-- Back -->
+                            <div
+                                class="flip-card-back absolute w-full h-full backface-hidden bg-indigo-600 text-white p-6 rounded-xl flex flex-col justify-center items-center text-center rotate-y-180">
+                                <h3 class="text-lg font-bold mb-2">Ayo Daftar Sekarang</h3>
+                                <p class="text-sm">Event edukatif dan menarik untuk semua kalangan — jangan lewatkan!
+                                </p>
+                                <a href="#register"
+                                    class="mt-4 bg-white text-indigo-600 px-4 py-2 rounded-full font-semibold hover:bg-yellow-300 transition">Daftar</a>
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <!-- Flip Card -->
+                    <div class="flip-card w-72 h-[420px]">
+                        <div
+                            class="flip-card-inner relative w-full h-full transition-transform duration-700 ease-in-out transform hover:rotate-y-180">
+
+                            <!-- Front -->
+                            <div
+                                class="flip-card-front absolute w-full h-full backface-hidden bg-white p-6 rounded-xl shadow-lg flex flex-col justify-center items-center text-center">
+                                <img src="/event_mleb/Science Zone.jpg" alt="Event"
+                                    class="w-full h-auto rounded-lg mb-4">
+                                <h3 class="text-lg font-bold mb-2">Pameran Energi</h3>
+                                <p class="text-sm text-gray-600">Temukan teknologi terbaru dan interaktif seputar
+                                    kelistrikan</p>
+                            </div>
+
+                            <!-- Back -->
+                            <div
+                                class="flip-card-back absolute w-full h-full backface-hidden bg-indigo-600 text-white p-6 rounded-xl flex flex-col justify-center items-center text-center rotate-y-180">
+                                <h3 class="text-lg font-bold mb-2">Ayo Daftar Sekarang</h3>
+                                <p class="text-sm">Event edukatif dan menarik untuk semua kalangan — jangan lewatkan!
+                                </p>
+                                <a href="#register"
+                                    class="mt-4 bg-white text-indigo-600 px-4 py-2 rounded-full font-semibold hover:bg-yellow-300 transition">Daftar</a>
+                            </div>
+
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+        <!-- berita section -->
+
+        <section id="news" class="py-16 bg-gray-50">
+            <div class="container mx-auto px-4">
+                <h2 class="text-4xl text-center font-bold text-indigo-700 mb-4">Info MLEB</h2>
+                <p class="text-center text-gray-600 mb-8">Jelajahi berbagai informasi menarik seputar MLEB</p>
+                <hr class="border-t-2 border-indigo-300 w-100 mx-auto mb-8">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+
+                    <a href="#" class="relative block rounded-lg overflow-hidden md:col-span-2 shadow-lg group">
+                        <img src="/hero_img/Museum 5.jpg" alt="Lomba Panjat Pinang"
+                            class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent"></div>
+                        <div class="absolute bottom-0 left-0 p-6 text-white">
+                            <h3 class="text-xl md:text-3xl font-bold mb-2">Lomba Panjat Pinang Terbanyak di Jakarta
+                                Memeriahkan HUT RI 17 Agustus 2025</h3>
+                            <span class="text-sm border-b-2 border-white pb-1">Lebih lanjut ></span>
+                        </div>
+                    </a>
+
+                    <div class="flex flex-col gap-6">
+                        <a href="#" class="relative flex gap-4 p-4 bg-white rounded-lg shadow-md group">
+                            <img src="/hero_img/mleb depan.png" alt="Rekomendasi Acara"
+                                class="w-24 h-24 object-cover rounded-md flex-shrink-0 group-hover:scale-105 transition-transform duration-300">
+                            <div class="flex-1">
+                                <span class="text-xs text-blue-500 font-semibold mb-1 block">MLEB</span>
+                                <p class="font-bold text-gray-800 mb-1">Rekomendasi Tempat Acara Kemerdekaan 17 Agustus
+                                    di Jakarta</p>
+                                <span class="text-sm text-gray-600 border-b-2 border-gray-600 pb-1">Lebih lanjut
+                                    ></span>
+                            </div>
+                        </a>
+
+                        <a href="#" class="relative flex gap-4 p-4 bg-white rounded-lg shadow-md group">
+                            <img src="/hero_img/teater-5d.jpg" alt="Liburan ke Ancol"
+                                class="w-24 h-24 object-cover rounded-md flex-shrink-0 group-hover:scale-105 transition-transform duration-300">
+                            <div class="flex-1">
+                                <span class="text-xs text-blue-500 font-semibold mb-1 block">MLEB</span>
+                                <p class="font-bold text-gray-800 mb-1">Worth It Gak Sih Liburan ke MLEB? Ini
+                                    Jawabannya!</p>
+                                <span class="text-sm text-gray-600 border-b-2 border-gray-600 pb-1">Lebih lanjut
+                                    ></span>
+                            </div>
+                        </a>
+
+                        <a href="#" class="relative flex gap-4 p-4 bg-white rounded-lg shadow-md group">
+                            <img src="/hero_img/mlebtulisan.jpg" alt="Liburan ke Ancol"
+                                class="w-24 h-24 object-cover rounded-md flex-shrink-0 group-hover:scale-105 transition-transform duration-300">
+                            <div class="flex-1">
+                                <span class="text-xs text-blue-500 font-semibold mb-1 block">MLEB</span>
+                                <p class="font-bold text-gray-800 mb-1">Worth It Gak Sih Liburan ke MLEB? Ini
+                                    Jawabannya!</p>
+                                <span class="text-sm text-gray-600 border-b-2 border-gray-600 pb-1">Lebih lanjut
+                                    ></span>
+                            </div>
+                        </a>
+
+                        <a href="#" class="mt-4 text-blue-600 font-semibold text-right">
+                            Lihat Semua Artikel >
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <footer class="bg-gradient-to-r from-[#00AFC1] to-[#0D5C66] text-white py-12">
+            <div
+                class="max-w-7xl mx-auto px-6 lg:px-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10 lg:gap-16 text-center md:text-left">
+
+                <div class="flex flex-col items-center md:items-start space-y-4">
+                    <a href="/" aria-label="Beranda Museum Listrik dan Energi Baru Terbarukan"
+                        class="transition-transform duration-300 hover:scale-105">
+                        <img src="/mleb_foto/MLEB-logo.png" alt="Logo Museum Listrik dan Energi Baru Terbarukan"
+                            class="w-36 h-auto">
+                    </a>
+                    <p class="text-sm text-gray-300 leading-relaxed max-w-[250px] md:max-w-full">
+                        Museum Listrik dan Energi Baru Terbarukan menyediakan layanan digital terintegrasi untuk
+                        membangun masa depan yang cerdas.
+                    </p>
+                </div>
+
+                <div class="space-y-4">
+                    <h3 class="text-xl font-bold mb-4">Kontak Kami</h3>
+                    <address class="space-y-3 text-sm not-italic">
+                        <div class="flex items-start md:items-center space-x-2">
+                            <i class="fas fa-map-marker-alt text-yellow-300 mt-1 md:mt-0 flex-shrink-0"
+                                title="Alamat Kantor"></i>
+                            <p class="text-gray-300">
+                                Kawasan TMII, Kramat Jati, Pinang Ranti, Kec. Cipayung, Kota Jakarta Timur, Daerah
+                                Khusus Ibukota Jakarta 13560
+                            </p>
+                        </div>
+                        <div class="flex items-center space-x-2">
+                            <i class="fas fa-envelope text-yellow-300 flex-shrink-0" title="Email Kami"></i>
+                            <a href="mailto:info@museumlistrikdanenergi.com"
+                                class="text-gray-300 hover:text-yellow-300 transition-colors duration-300">
+                                info@museumlistrikdanenergi.com
+                            </a>
+                        </div>
+                        <div class="flex items-center space-x-2">
+                            <i class="fab fa-whatsapp text-yellow-300 flex-shrink-0" title="Hubungi via WhatsApp"></i>
+                            <a href="https://wa.me/6281234567890" target="_blank"
+                                class="text-gray-300 hover:text-yellow-300 transition-colors duration-300">
+                                M-Assist (WhatsApp)
+                            </a>
+                        </div>
+                    </address>
+                </div>
+
+                <div class="space-y-4">
+                    <h3 class="text-xl font-bold mb-2">Lokasi</h3>
+                    <div class="rounded-lg shadow-lg overflow-hidden border border-white/20">
+                        <iframe
+                            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3966.529202353164!2d106.84074251476906!3d-6.195022295507119!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e69f43f1b3b2c15%3A0x6789f25a91a9f02!2sMuseum%20Listrik%20dan%20Energi%20Baru!5e0!3m2!1sid!2sid!4v1625078400000!5m2!1sid!2sid"
+                            width="100%" height="180" style="border:0;" allowfullscreen="" loading="lazy"
+                            referrerpolicy="no-referrer-when-downgrade"
+                            title="Lokasi Museum Listrik dan Energi Baru"></iframe>
+                    </div>
+                </div>
+
+                <div class="space-y-4">
+                    <h3 class="text-xl font-bold">Ikuti Kami</h3>
+                    <div class="flex flex-wrap md:flex-col gap-x-6 gap-y-3 text-white">
+                        <a href="#"
+                            class="flex items-center space-x-2 hover:text-yellow-300 transition-colors duration-300"
+                            aria-label="Ikuti kami di Facebook">
+                            <i class="fab fa-facebook-square text-2xl"></i>
+                            <span class="text-base font-medium">Facebook</span>
+                        </a>
+                        <a href="#"
+                            class="flex items-center space-x-2 hover:text-yellow-300 transition-colors duration-300"
+                            aria-label="Ikuti kami di Instagram">
+                            <i class="fab fa-instagram text-2xl"></i>
+                            <span class="text-base font-medium">Instagram</span>
+                        </a>
+                        <a href="#"
+                            class="flex items-center space-x-2 hover:text-yellow-300 transition-colors duration-300"
+                            aria-label="Ikuti kami di Twitter">
+                            <i class="fab fa-twitter text-2xl"></i>
+                            <span class="text-base font-medium">Twitter</span>
+                        </a>
+                        <a href="#"
+                            class="flex items-center space-x-2 hover:text-yellow-300 transition-colors duration-300"
+                            aria-label="Ikuti kami di YouTube">
+                            <i class="fab fa-youtube text-2xl"></i>
+                            <span class="text-base font-medium">YouTube</span>
+                        </a>
+                        <a href="#"
+                            class="flex items-center space-x-2 hover:text-yellow-300 transition-colors duration-300"
+                            aria-label="Ikuti kami di TikTok">
+                            <i class="fab fa-tiktok text-2xl"></i>
+                            <span class="text-base font-medium">TikTok</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mt-10 border-t border-white/30 pt-4 text-center text-sm text-gray-400">
+                © 2025 Museum Listrik dan Energi Baru. Hak cipta Dilindungi.
+            </div>
+        </footer>
+
+        <div class="util-btn-group" id="utilBtnGroup">
+            <a href="mailto:museumlistrikpln@gmail.com" target="_blank" id="email-btn" class="util-btn hidden"
+                aria-label="Hubungi kami melalui Email">
+                <i class="fas fa-envelope text-2xl"></i>
+            </a>
+            <a href="#" target="_blank" id="facebook-btn" class="util-btn hidden" aria-label="Kunjungi Facebook kami">
+                <i class="fab fa-facebook-f text-2xl"></i>
+            </a>
+            <a href="https://www.youtube.com/@MuseumListrikPLN" target="_blank" id="youtube-btn" class="util-btn hidden"
+                aria-label="Kunjungi YouTube kami">
+                <i class="fab fa-youtube text-2xl"></i>
+            </a>
+            <a href="https://instagram.com/museumlistrik" target="_blank" id="instagram-btn" class="util-btn hidden"
+                aria-label="Kunjungi Instagram kami">
+                <i class="fab fa-instagram text-2xl"></i>
+            </a>
+            <a href="https://wa.me/6281234567890?text=Halo,%20saya%20tertarik%20dengan%20informasi%20dari%20website%20Anda."
+                target="_blank" id="whatsapp-btn" class="util-btn hidden" aria-label="Hubungi kami melalui WhatsApp">
+                <i class="fab fa-whatsapp text-2xl"></i>
+            </a>
+
+            <button id="mainUtilBtn" class="util-btn" aria-label="Tombol Utilitas">
+                <i class="fas fa-headset text-2xl"></i>
+            </button>
+        </div>
+
+        <div id="booking-modal" class="modal">
+            <div class="modal-content">
+                <span class="close-btn" aria-label="Tutup modal">×</span>
+                <div class="modal-body">
+                </div>
+            </div>
+        </div>
+
+        <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                // --- Hotel Booking Section Logic ---
+                const searchForm = document.getElementById('search-form');
+                const roomResultsContainer = document.getElementById('room-results-container');
+                const bookingModal = document.getElementById('booking-modal');
+                const modalBody = document.querySelector('.modal-body');
+                const closeModalBtn = document.querySelector('.close-btn');
+
+                const availableRooms = [
+                    { id: 1, type: 'Kamar Standar', capacity: 2, price: 500000, description: 'Kamar nyaman untuk dua orang dengan fasilitas dasar.', img: 'https://images.unsplash.com/photo-1595561081682-143003046f88?q=80&w=1887&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D', facilities: ['AC', 'TV', 'Wi-Fi gratis'] },
+                    { id: 2, type: 'Kamar Deluxe', capacity: 3, price: 850000, description: 'Kamar lebih luas dengan pemandangan kota dan mini bar.', img: 'https://images.unsplash.com/photo-1555325881-229048dd0c41?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D', facilities: ['AC', 'TV', 'Wi-Fi gratis', 'Mini bar', 'Sarapan'] },
+                    { id: 3, type: 'Suite Keluarga', capacity: 4, price: 1500000, description: 'Ruangan besar cocok untuk keluarga dengan ruang tamu terpisah.', img: 'https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D', facilities: ['AC', 'TV', 'Wi-Fi gratis', 'Mini bar', 'Ruang tamu', 'Pemandangan laut'] },
+                ];
+
+                function displayRooms(rooms) {
+                    roomResultsContainer.innerHTML = '';
+                    if (rooms.length === 0) {
+                        roomResultsContainer.innerHTML = `
+                        <div class="initial-message col-span-full text-center py-12 text-gray-500 italic text-lg">
+                            <p>Maaf, tidak ada kamar yang tersedia untuk kriteria tersebut.</p>
+                        </div>
+                    `;
+                        return;
+                    }
+
+                    rooms.forEach((room, index) => {
+                        const roomCard = document.createElement('div');
+                        roomCard.classList.add('room-card');
+                        roomCard.style.animationDelay = `${index * 0.1}s`;
+                        roomCard.innerHTML = `
+                        <img src="${room.img}" alt="${room.type}" class="w-full h-[200px] object-cover rounded-t-lg">
+                        <div class="p-5 flex flex-col flex-grow">
+                            <h3 class="text-xl font-bold text-blue-800 mb-2">${room.type}</h3>
+                            <div class="text-sm text-gray-600 mb-4">
+                                <p><i class="fas fa-users text-blue-500 mr-2"></i> Kapasitas: ${room.capacity} tamu</p>
+                                <p>${room.description}</p>
+                            </div>
+                            <div class="text-2xl font-bold text-orange-500 mt-auto">Rp${room.price.toLocaleString('id-ID')}</div>
+                            <button class="btn-book py-3 mt-4 rounded-md font-semibold text-lg" onclick="openBookingModal(${room.id})">Pesan Sekarang</button>
+                        </div>
+                    `;
+                        roomResultsContainer.appendChild(roomCard);
+                    });
+                }
+
+                searchForm.addEventListener('submit', function (event) {
+                    event.preventDefault();
+                    const checkinDate = new Date(document.getElementById('checkin').value);
+                    const checkoutDate = new Date(document.getElementById('checkout').value);
+                    const guests = parseInt(document.getElementById('guests').value);
+
+                    if (checkoutDate <= checkinDate) {
+                        alert('Tanggal check-out harus setelah tanggal check-in.');
+                        return;
+                    }
+
+                    const filteredRooms = availableRooms.filter(room => room.capacity >= guests);
+                    displayRooms(filteredRooms);
+                });
+
+                window.openBookingModal = function (roomId) {
+                    const roomToBook = availableRooms.find(room => room.id === roomId);
+                    if (!roomToBook) return;
+
+                    const facilitiesHtml = roomToBook.facilities.map(fac => `<li class="flex items-center gap-2"><i class="fas fa-check-circle text-green-500"></i> ${fac}</li>`).join('');
+
+                    modalBody.innerHTML = `
+                    <img src="${roomToBook.img}" alt="${roomToBook.type}" class="w-full h-64 object-cover rounded-md mb-5">
+                    <h4 class="text-2xl font-bold text-blue-800 mb-3">${roomToBook.type}</h4>
+                    <p class="mb-2"><strong>Deskripsi:</strong> ${roomToBook.description}</p>
+                    <p class="mb-2"><strong>Kapasitas:</strong> ${roomToBook.capacity} tamu</p>
+                    <p class="font-semibold mt-4 mb-2">Fasilitas:</p>
+                    <ul class="list-none space-y-2">${facilitiesHtml}</ul>
+                    <hr class="my-5 border-gray-300">
+                    <div class="flex flex-col sm:flex-row justify-between items-center">
+                        <p class="price text-2xl font-bold text-orange-500 mb-4 sm:mb-0">Harga: Rp${roomToBook.price.toLocaleString('id-ID')}</p>
+                        <button class="btn-book py-3 px-6 rounded-md font-semibold text-lg" onclick="confirmBooking(${roomToBook.id})">Konfirmasi Pesanan</button>
+                    </div>
+                `;
+                    bookingModal.style.display = 'block';
+                };
+
+                window.confirmBooking = function (roomId) {
+                    const roomToBook = availableRooms.find(room => room.id === roomId);
+                    alert(`Pesanan kamar ${roomToBook.type} berhasil dikonfirmasi. Selamat berlibur!`);
+                    bookingModal.style.display = 'none';
+                };
+
+                closeModalBtn.addEventListener('click', () => {
+                    bookingModal.style.display = 'none';
+                });
+
+                window.addEventListener('click', (event) => {
+                    if (event.target == bookingModal) {
+                        bookingModal.style.display = 'none';
+                    }
+                });
+
+                document.addEventListener('DOMContentLoaded', function () {
+                    const searchForm = document.getElementById('search-form');
+                    const roomResultsContainer = document.getElementById('room-results-container');
+                    const bookingModal = document.getElementById('booking-modal');
+                    const modalBody = document.querySelector('.modal-body');
+                    const closeModalBtn = document.querySelector('.close-btn');
+
+                    const availableRooms = {
+                        // Kelompok Kamar Listrik
+                        'Kamar Listrik': [
+                            { id: 1, type: 'Kamar Standar', capacity: 2, price: 500000, description: 'Kamar nyaman untuk dua orang dengan fasilitas dasar.', img: 'https://images.unsplash.com/photo-1595561081682-143003046f88?q=80&w=1887&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D', facilities: ['AC', 'TV', 'Wi-Fi gratis'] },
+                            { id: 7, type: 'Kamar Standar', capacity: 3, price: 600000, description: 'Kamar Standar dengan kasur tambahan, cocok untuk keluarga kecil.', img: 'https://images.unsplash.com/photo-1565576779434-ab6a15291b8a?q=80&w=1935&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D', facilities: ['AC', 'TV', 'Wi-Fi gratis', 'Kasur tambahan'] },
+                        ],
+
+                        // Kelompok Kamar Energi
+                        'Kamar Energi': [
+                            { id: 2, type: 'Kamar Deluxe', capacity: 3, price: 850000, description: 'Kamar lebih luas dengan pemandangan kota dan mini bar.', img: 'https://images.unsplash.com/photo-1555325881-229048dd0c41?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D', facilities: ['AC', 'TV', 'Wi-Fi gratis', 'Mini bar', 'Sarapan'] },
+                            { id: 3, type: 'Suite Keluarga', capacity: 4, price: 1500000, description: 'Ruangan besar cocok untuk keluarga dengan ruang tamu terpisah.', img: 'https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D', facilities: ['AC', 'TV', 'Wi-Fi gratis', 'Mini bar', 'Ruang tamu', 'Pemandangan laut'] },
+                            { id: 8, type: 'Kamar Deluxe', capacity: 2, price: 900000, description: 'Kamar Deluxe dengan pemandangan pegunungan dan balkon pribadi.', img: 'https://images.unsplash.com/photo-1563299797-0b1a0301a918?q=80&w=1887&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D', facilities: ['AC', 'Smart TV', 'Wi-Fi gratis', 'Balkon', 'Sarapan'] },
+                            { id: 9, type: 'Suite Keluarga', capacity: 5, price: 1800000, description: 'Suite luas untuk keluarga besar, dengan 2 kamar tidur terpisah.', img: 'https://images.unsplash.com/photo-1551882547-ff40c63fe5fa?q=80&w=1770&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D', facilities: ['AC', 'TV', 'Wi-Fi gratis', '2 kamar tidur', 'Ruang makan', 'Pemandangan laut'] },
+                        ],
+
+                        // Kelompok Kamar Energi Baru
+                        'Kamar Energi Baru': [
+                            { id: 4, type: 'Kamar Premium', capacity: 2, price: 1200000, description: 'Kamar mewah dengan kasur king-size dan pemandangan kolam renang.', img: 'https://images.unsplash.com/photo-1566073771259-d3687352352d?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D', facilities: ['AC', 'TV 4K', 'Wi-Fi kecepatan tinggi', 'Mini bar premium', 'Akses kolam renang'] },
+                            { id: 5, type: 'Kamar Executive', capacity: 2, price: 1800000, description: 'Kamar eksklusif di lantai atas dengan akses lounge eksekutif.', img: 'https://images.unsplash.com/photo-1520250497591-112f2f40ddf5?q=80&w=1964&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D', facilities: ['AC', 'Smart TV', 'Wi-Fi kecepatan tinggi', 'Layanan laundry', 'Lounge eksekutif', 'Sarapan dan makan malam'] },
+                            { id: 6, type: 'Suite Presiden', capacity: 6, price: 5500000, description: 'Suite termewah dengan pemandangan 360 derajat, jacuzzi pribadi, dan pelayan pribadi.', img: 'https://images.unsplash.com/photo-1616047006789-5095874b39a9?q=80&w=1887&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D', facilities: ['AC', 'Smart TV 65 inci', 'Wi-Fi super cepat', 'Jacuzzi', 'Pelayan pribadi', 'Ruang makan', 'Ruang kerja'] },
+                        ]
+                    };
+
+                    function displayRooms(rooms) {
+                        roomResultsContainer.innerHTML = '';
+                        if (rooms.length === 0) {
+                            roomResultsContainer.innerHTML = `
+                    <div class="initial-message col-span-full text-center py-12 text-gray-500 italic text-lg">
+                        <p>Maaf, tidak ada kamar yang tersedia untuk kriteria tersebut.</p>
+                    </div>
+                `;
+                            return;
+                        }
+
+                        rooms.forEach((room, index) => {
+                            const roomCard = document.createElement('div');
+                            roomCard.classList.add('room-card');
+                            roomCard.style.animationDelay = `${index * 0.1}s`;
+                            roomCard.innerHTML = `
+                    <img src="${room.img}" alt="${room.type}" class="w-full h-[200px] object-cover rounded-t-lg">
+                    <div class="p-5 flex flex-col flex-grow">
+                        <h3 class="text-xl font-bold text-blue-800 mb-2">${room.type}</h3>
+                        <div class="text-sm text-gray-600 mb-4">
+                            <p><i class="fas fa-users text-blue-500 mr-2"></i> Kapasitas: ${room.capacity} tamu</p>
+                            <p>${room.description}</p>
+                        </div>
+                        <div class="text-2xl font-bold text-orange-500 mt-auto">Rp${room.price.toLocaleString('id-ID')}</div>
+                        <button class="btn-book py-3 mt-4 rounded-md font-semibold text-lg" onclick="openBookingModal(${room.id})">Pesan Sekarang</button>
+                    </div>
+                `;
+                            roomResultsContainer.appendChild(roomCard);
+                        });
+                    }
+
+                    searchForm.addEventListener('submit', function (event) {
+                        event.preventDefault();
+                        const checkinDate = new Date(document.getElementById('checkin').value);
+                        const checkoutDate = new Date(document.getElementById('checkout').value);
+                        const guests = parseInt(document.getElementById('guests').value);
+                        const roomType = document.getElementById('room-type').value; // Mengambil nilai dari dropdown
+
+                        if (checkoutDate <= checkinDate) {
+                            alert('Tanggal check-out harus setelah tanggal check-in.');
+                            return;
+                        }
+
+                        let filteredRooms = availableRooms.filter(room => room.capacity >= guests);
+
+                        // Logika filter baru berdasarkan tipe kamar
+                        if (roomType !== 'all') {
+                            filteredRooms = filteredRooms.filter(room => room.type === roomType);
+                        }
+
+                        displayRooms(filteredRooms);
+                    });
+
+                    window.openBookingModal = function (roomId) {
+                        const roomToBook = availableRooms.find(room => room.id === roomId);
+                        if (!roomToBook) return;
+
+                        const facilitiesHtml = roomToBook.facilities.map(fac => `<li class="flex items-center gap-2"><i class="fas fa-check-circle text-green-500"></i> ${fac}</li>`).join('');
+
+                        modalBody.innerHTML = `
+                <img src="${roomToBook.img}" alt="${roomToBook.type}" class="w-full h-64 object-cover rounded-md mb-5">
+                <h4 class="text-2xl font-bold text-blue-800 mb-3">${roomToBook.type}</h4>
+                <p class="mb-2"><strong>Deskripsi:</strong> ${roomToBook.description}</p>
+                <p class="mb-2"><strong>Kapasitas:</strong> ${roomToBook.capacity} tamu</p>
+                <p class="font-semibold mt-4 mb-2">Fasilitas:</p>
+                <ul class="list-none space-y-2">${facilitiesHtml}</ul>
+                <hr class="my-5 border-gray-300">
+                <div class="flex flex-col sm:flex-row justify-between items-center">
+                    <p class="price text-2xl font-bold text-orange-500 mb-4 sm:mb-0">Harga: Rp${roomToBook.price.toLocaleString('id-ID')}</p>
+                    <button class="btn-book py-3 px-6 rounded-md font-semibold text-lg" onclick="confirmBooking(${roomToBook.id})">Konfirmasi Pesanan</button>
+                </div>
+            `;
+                        bookingModal.style.display = 'block';
+                    };
+
+                    window.confirmBooking = function (roomId) {
+                        const roomToBook = availableRooms.find(room => room.id === roomId);
+                        alert(`Pesanan kamar ${roomToBook.type} berhasil dikonfirmasi. Selamat berlibur!`);
+                        bookingModal.style.display = 'none';
+                    };
+
+                    closeModalBtn.addEventListener('click', () => {
+                        bookingModal.style.display = 'none';
+                    });
+
+                    window.addEventListener('click', (event) => {
+                        if (event.target == bookingModal) {
+                            bookingModal.style.display = 'none';
+                        }
+                    });
+                });
+
+                // --- Mobile Nav Menu Logic ---
+                const navbarToggler = document.getElementById('navbar-toggler');
+                const mobileNavMenu = document.getElementById('mobile-nav-menu');
+                const mobileNavOverlay = document.getElementById('mobile-nav-overlay');
+                const closeMenuBtn = document.getElementById('close-menu-btn');
+
+                function toggleMobileMenu() {
+                    mobileNavMenu.classList.toggle('translate-x-full');
+                    mobileNavOverlay.classList.toggle('hidden');
+                    mobileNavOverlay.classList.toggle('opacity-0');
+                    navbarToggler.classList.toggle('active');
+                }
+
+                navbarToggler.addEventListener('click', toggleMobileMenu);
+                closeMenuBtn.addEventListener('click', toggleMobileMenu);
+                mobileNavOverlay.addEventListener('click', toggleMobileMenu);
+
+                // Close menu if a link is clicked
+                mobileNavMenu.querySelectorAll('a').forEach(link => {
+                    link.addEventListener('click', () => {
+                        if (!mobileNavMenu.classList.contains('translate-x-full')) {
+                            toggleMobileMenu();
+                        }
+                    });
+                });
+
+                // --- Catalog Carousel Logic ---
+                const catalogData = [
+                    {
+                        image: "/catalog_img/wisma energi.jpg",
+                        title: "Pameran Sejarah Kelistrikan",
+                        description: "Mengungkap perjalanan listrik dari masa ke masa.",
+                        price: "Mulai Rp 50.000",
+                        rating: 4.8,
+                        details: "Interaktif & Edukatif"
+                    },
+                    {
+                        image: "/catalog_img/wisma energi baru.jpg",
+                        title: "Eksperimen Energi Terbarukan",
+                        description: "Pelajari cara kerja energi terbarukan dengan alat interaktif.",
+                        price: "Mulai Rp 45.000",
+                        rating: 4.7,
+                        details: "Praktis & Menarik"
+                    },
+                    {
+                        image: "/catalog_img/wisma listrik.jpeg",
+                        title: "Teater 5D Energi",
+                        description: "Nikmati film pendek tentang energi dengan efek 5D.",
+                        price: "Mulai Rp 60.000",
+                        rating: 4.9,
+                        details: "Pengalaman Sinematik"
+                    },
+                    {
+                        image: "/catalog_img/wisma energi.jpg",
+                        title: "Kelas Interaktif Listrik",
+                        description: "Kelas interaktif untuk anak-anak dan dewasa.",
+                        price: "Mulai Rp 40.000",
+                        rating: 4.6,
+                        details: "Belajar Sambil Bermain"
+                    },
+                    {
+                        image: "/catalog_img/wisma energi baru.jpg",
+                        title: "Workshop Energi Terbarukan",
+                        description: "Pelajari cara membuat panel surya mini.",
+                        price: "Mulai Rp 70.000",
+                        rating: 4.8,
+                        details: "Hands-on Learning"
+                    },
+                    {
+                        image: "/catalog_img/wisma listrik.jpeg",
+                        title: "Wisma Energi Terbarukan",
+                        description: "Eksplorasi inovasi energi masa depan.",
+                        price: "Mulai Rp 65.000",
+                        rating: 4.9,
+                        details: "Simulasi Canggih"
+                    },
+                    {
+                        image: "/catalog_img/wisma energi.jpg",
+                        title: "Laboratorium Listrik Interaktif",
+                        description: "Rasakan langsung cara kerja listrik.",
+                        price: "Mulai Rp 55.000",
+                        rating: 4.7,
+                        details: "Hands-on Experience"
+                    },
+                    {
+                        image: "/catalog_img/wisma energi baru.jpg",
+                        title: "Workshop Sains Energi",
+                        description: "Program edukasi mendalam untuk semua usia.",
+                        price: "Mulai Rp 75.000",
+                        rating: 4.6,
+                        details: "Untuk Pelajar & Umum"
+                    },
+                    {
+                        image: "/catalog_img/wisma listrik.jpeg",
+                        title: "Tur Virtual Museum",
+                        description: "Jelajahi museum dari mana saja.",
+                        price: "Gratis / Donasi",
+                        rating: 4.5,
+                        details: "Akses Online"
+                    }
+                ];
+
+                const catalogCarousel = document.getElementById('catalog-carousel');
+                const prevCatalogBtn = document.getElementById('prevCatalogBtn');
+                const nextCatalogBtn = document.getElementById('nextCatalogBtn');
+                const catalogIndicatorsContainer = document.getElementById('catalog-indicators');
+
+                function renderCatalogSlides() {
+                    catalogCarousel.innerHTML = '';
+                    catalogData.forEach((item, index) => {
+                        const slide = document.createElement('div');
+                        slide.className = `carousel-slide flex-shrink-0 w-full md:w-1/2 lg:w-1/3 snap-start px-3 py-2`;
+                        slide.innerHTML = `
+                        <div class="relative bg-white rounded-xl shadow-xl overflow-hidden group cursor-pointer transform transition-transform duration-300 hover:scale-[1.02]">
+                            <img src="${item.image}" alt="${item.title}" class="w-full h-64 object-cover">
+                            <div class="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent"></div>
+                            <div class="absolute bottom-0 left-0 right-0 text-white p-6">
+                                <h3 class="font-extrabold text-2xl mb-2">${item.title}</h3>
+                                <p class="text-sm opacity-90 mb-3">${item.description}</p>
+                                <div class="flex justify-between items-center mb-4">
+                                    <span class="text-lg font-bold text-yellow-300">${item.price}</span>
+                                    <div class="flex items-center text-yellow-400">
+                                        <i class="fas fa-star text-sm mr-1"></i>
+                                        <span class="text-sm font-semibold">${item.rating.toFixed(1)}</span>
+                                    </div>
+                                </div>
+                                <p class="text-xs text-gray-300 mb-4">${item.details}</p>
+                                <div class="text-right">
+                                    <button class="px-7 py-3 bg-blue-600 text-white rounded-full font-semibold text-base shadow-md hover:bg-blue-700 transition duration-300">
+                                        Pesan Sekarang
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                        catalogCarousel.appendChild(slide);
+                    });
+                    updateCatalogIndicators();
+                }
+
+                function updateCatalogIndicators() {
+                    catalogIndicatorsContainer.innerHTML = '';
+                    const totalSlides = catalogData.length;
+                    const visibleSlides = window.innerWidth >= 1024 ? 3 : window.innerWidth >= 768 ? 2 : 1;
+                    const totalDots = Math.ceil(totalSlides / visibleSlides);
+                    const currentVisibleSet = Math.floor(catalogCarousel.scrollLeft / catalogCarousel.offsetWidth);
+
+                    for (let i = 0; i < totalDots; i++) {
+                        const dot = document.createElement('button');
+                        dot.className = `w-3 h-3 rounded-full mx-1 transition-all duration-300 ${i === currentVisibleSet ? 'bg-white' : 'bg-gray-400'}`;
+                        dot.setAttribute('aria-label', `Go to catalog slide ${i + 1}`);
+                        dot.onclick = () => {
+                            catalogCarousel.scrollLeft = i * catalogCarousel.offsetWidth;
+                        };
+                        catalogIndicatorsContainer.appendChild(dot);
+                    }
+                }
+
+                function handleCatalogScroll() {
+                    updateCatalogIndicators();
+                }
+
+                prevCatalogBtn.addEventListener('click', () => {
+                    catalogCarousel.scrollBy({ left: -catalogCarousel.offsetWidth, behavior: 'smooth' });
+                });
+                nextCatalogBtn.addEventListener('click', () => {
+                    catalogCarousel.scrollBy({ left: catalogCarousel.offsetWidth, behavior: 'smooth' });
+                });
+
+                catalogCarousel.addEventListener('scroll', handleCatalogScroll);
+                window.addEventListener('resize', () => {
+                    updateCatalogIndicators();
+                });
+
+                renderCatalogSlides();
+            });
+
+            // Data for Hero Carousel
+            const heroSlidesData = [
+                {
+                    image: "/hero_img/mleb depan.png", // 'mleb depan.png' (Using existing image as placeholder)
+                    title: "Jelajahi Dunia Listrik & Energi Baru",
+                    subtitle: "Temukan pengetahuan dan inovasi terbaru di Museum Listrik dan Energi Baru Terbarukan. Pengalaman interaktif menanti Anda!"
+                },
+                {
+                    image: "/hero_img/mlebtulisan.jpg", // 'mlebtulisan.jpg' (Using existing image as placeholder)
+                    title: "Inovasi Tanpa Batas di Wisma Listrik",
+                    subtitle: "Saksikan bagaimana teknologi listrik mengubah dunia, dari masa lalu hingga masa depan yang cerah."
+                },
+                {
+                    image: "/hero_img/teater-5d.jpg", // 'teater-5d.jpg' (Using existing image as placeholder)
+                    title: "Pengalaman Imersif di Teater 5D Kami",
+                    subtitle: "Rasakan petualangan energi yang mendebarkan dengan visual, suara, dan sensasi yang memukau."
+                },
+                {
+                    image: "/hero_img/Museum 5.jpg", // 'mleb depan.png' (Using existing image as placeholder)
+                    title: "Jelajahi Dunia Listrik & Energi Baru",
+                    subtitle: "Temukan pengetahuan dan inovasi terbaru di Museum Listrik dan Energi Baru Terbarukan. Pengalaman interaktif menanti Anda!"
+                },
+                {
+                    image: "/hero_img/Museum-listrik.jpg", // 'mleb depan.png' (Using existing image as placeholder)
+                    title: "Jelajahi Dunia Listrik & Energi Baru",
+                    subtitle: "Temukan pengetahuan dan inovasi terbaru di Museum Listrik dan Energi Baru Terbarukan. Pengalaman interaktif menanti Anda!"
+                },
+            ];
+
+
+            // --- Hero Carousel Logic ---
+            const heroCarouselContainer = document.getElementById('hero-carousel-container');
+            const heroTitleElement = document.getElementById('hero-title');
+            const heroSubtitleElement = document.getElementById('hero-subtitle');
+            const heroPrevBtn = document.getElementById('hero-prev-btn');
+            const heroNextBtn = document.getElementById('hero-next-btn');
+            const heroIndicatorsContainer = document.getElementById('hero-indicators');
+
+            let currentHeroSlide = 0;
+            let heroAutoplayInterval;
+
+            function renderHeroSlides() {
+                heroCarouselContainer.innerHTML = ''; // Clear existing slides
+                heroIndicatorsContainer.innerHTML = ''; // Clear existing indicators
+
+                heroSlidesData.forEach((slideData, index) => {
+                    // Create slide div
+                    const slideDiv = document.createElement('div');
+                    slideDiv.className = `hero-carousel-slide ${index === 0 ? 'active' : ''}`;
+                    slideDiv.style.backgroundImage = `url('${slideData.image}')`;
+                    heroCarouselContainer.appendChild(slideDiv);
+
+                    // Create indicator dot
+                    const dot = document.createElement('button');
+                    dot.className = `w-3 h-3 rounded-full mx-1 transition-all duration-300 ${index === 0 ? 'bg-white' : 'bg-white/50'}`;
+                    dot.setAttribute('aria-label', `Go to hero slide ${index + 1}`);
+                    dot.onclick = () => showHeroSlide(index);
+                    heroIndicatorsContainer.appendChild(dot);
+                });
+
+                // Set initial text
+                heroTitleElement.textContent = heroSlidesData[0].title;
+                heroSubtitleElement.textContent = heroSlidesData[0].subtitle;
+            }
+
+            function showHeroSlide(index) {
+                // Hide all slides and remove active class
+                const slides = heroCarouselContainer.querySelectorAll('.hero-carousel-slide');
+                slides.forEach(slide => slide.classList.remove('active'));
+
+                // Show the target slide and add active class
+                slides[index].classList.add('active');
+
+                // Update text content
+                heroTitleElement.textContent = heroSlidesData[index].title;
+                heroSubtitleElement.textContent = heroSlidesData[index].subtitle;
+
+                // Update indicators
+                const indicators = heroIndicatorsContainer.querySelectorAll('button');
+                indicators.forEach((dot, i) => {
+                    dot.classList.remove('bg-white');
+                    dot.classList.add('bg-white/50');
+                    if (i === index) {
+                        dot.classList.add('bg-white');
+                        dot.classList.remove('bg-white/50');
+                    }
+                });
+
+                currentHeroSlide = index;
+            }
+
+            function nextHeroSlide() {
+                const nextIndex = (currentHeroSlide + 1) % heroSlidesData.length;
+                showHeroSlide(nextIndex);
+            }
+
+            function prevHeroSlide() {
+                const prevIndex = (currentHeroSlide - 1 + heroSlidesData.length) % heroSlidesData.length;
+                showHeroSlide(prevIndex);
+            }
+
+            function startHeroAutoplay() {
+                stopHeroAutoplay(); // Clear existing interval to prevent duplicates
+                heroAutoplayInterval = setInterval(nextHeroSlide, 7000); // Change slide every 7 seconds
+            }
+
+            function stopHeroAutoplay() {
+                clearInterval(heroAutoplayInterval);
+            }
+
+            // Event listeners for Hero Carousel
+            heroPrevBtn.addEventListener('click', () => { prevHeroSlide(); startHeroAutoplay(); });
+            heroNextBtn.addEventListener('click', () => { nextHeroSlide(); startHeroAutoplay(); });
+            // Pause autoplay on hover over the hero section
+            document.querySelector('.hero').addEventListener('mouseenter', stopHeroAutoplay);
+            document.querySelector('.hero').addEventListener('mouseleave', startHeroAutoplay);
+
+
+
+
+            // Initialize Hero Carousel
+            renderHeroSlides();
+            showHeroSlide(0); // Show the first slide initially
+            startHeroAutoplay();
+
+            // Simplified Input/Clear logic for Hero Section
+            const locationInput = document.getElementById('locationInput');
+            if (locationInput) { // Check if element exists
+                const clearIcon = locationInput.nextElementSibling;
+                locationInput.addEventListener('input', () => {
+                    clearIcon.style.display = locationInput.value.trim() !== '' ? 'block' : 'none';
+                });
+                clearIcon.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    locationInput.value = '';
+                    clearIcon.style.display = 'none';
+                    locationInput.focus();
+                });
+            }
+
+            document.querySelectorAll('.search-input-group').forEach(group => {
+                group.addEventListener('click', (e) => {
+                    if (!e.target.classList.contains('clear-icon') && group.querySelector('input')) {
+                        group.querySelector('input').focus();
+                    }
+                });
+            });
+            // Fungsionalitas tombol utilitas
+            const mainUtilBtn = document.getElementById('mainUtilBtn');
+            const utilBtnGroup = document.getElementById('utilBtnGroup');
+            const utilButtons = document.querySelectorAll('.util-btn:not(#mainUtilBtn)');
+            const mainIcon = mainUtilBtn.querySelector('i');
+
+            if (mainUtilBtn && utilBtnGroup) {
+                mainUtilBtn.addEventListener('click', function () {
+                    const isExpanded = utilBtnGroup.classList.toggle('util-btn-group-show');
+
+                    if (isExpanded) {
+                        // Tampilkan tombol
+                        mainIcon.classList.remove('fa-headset');
+                        mainIcon.classList.add('fa-times');
+                        utilButtons.forEach(btn => btn.classList.remove('hidden'));
+                    } else {
+                        // Sembunyikan tombol
+                        mainIcon.classList.remove('fa-times');
+                        mainIcon.classList.add('fa-headset');
+                        utilButtons.forEach(btn => btn.classList.add('hidden'));
+                    }
+                });
+            }
+        </script>
+    </body>
+
+</html>

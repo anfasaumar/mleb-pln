@@ -1,0 +1,684 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Admin - Museum Listrik PLN</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        .line {
+            width: 25px;
+            height: 3px;
+            background-color: white;
+            margin: 4px 0;
+            transition: all 0.3s ease;
+        }
+
+        #navbar-toggler.open .line-1 {
+            transform: rotate(-45deg) translate(-5px, 6px);
+        }
+
+        #navbar-toggler.open .line-2 {
+            opacity: 0;
+        }
+
+        #navbar-toggler.open .line-3 {
+            transform: rotate(45deg) translate(-5px, -6px);
+        }
+
+        #navbarNav {
+            display: none;
+        }
+
+        @media (min-width: 768px) {
+            #navbarNav {
+                display: flex !important;
+            }
+        }
+
+        #navbarNav.open {
+            display: flex;
+        }
+
+        .sidebar-item-active {
+            background-color: #0D5C66;
+            border-left: 4px solid #00AFC1;
+        }
+
+        .hover-effect:hover {
+            color: #fcd34d;
+            transition: color 0.3s ease;
+        }
+
+        .page-content {
+            display: none;
+        }
+
+        .page-content.active {
+            display: block;
+        }
+
+        /* CSS untuk membuat tabel lebih responsif di mobile */
+        .table-responsive {
+            overflow-x: auto;
+        }
+
+        .table-responsive table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+    </style>
+</head>
+
+<body class="bg-gray-100 font-sans flex flex-col min-h-screen">
+
+    <body class="bg-gray-100 font-sans">
+        <!-- Top Navbar Section -->
+        <div class="bg-[#035B71] text-white py-2 shadow-md">
+            <div class="container mx-auto px-4 flex flex-col sm:flex-row justify-between items-center gap-2">
+                <div class="flex items-center gap-2">
+                    <i class="fas fa-globe text-white"></i>
+                    <small class="text-white">museumlistrikpln.com | (+62) 812-3456-7890</small>
+                </div>
+                <div class="flex gap-4">
+                    <a href="mailto:museumlistrikpln@gmail.com" class="text-white text-lg hover-effect"
+                        aria-label="Email Museum Listrik"><i class="fas fa-envelope"></i></a>
+                    <a href="https://wa.me/6281234567890" target="_blank" class="text-white text-lg hover-effect"
+                        aria-label="WhatsApp Museum Listrik"><i class="fab fa-whatsapp"></i></a>
+                    <a href="tel:+6281234567890" class="text-white text-lg hover-effect"
+                        aria-label="Telepon Museum Listrik"><i class="fas fa-phone"></i></a>
+                    <a href="https://instagram.com/museumlistrik" target="_blank"
+                        class="text-white text-lg hover-effect" aria-label="Instagram Museum Listrik"><i
+                            class="fab fa-instagram"></i></a>
+                    <a href="https://www.tiktok.com/@museumlistrikpln" target="_blank"
+                        class="text-white text-lg hover-effect" aria-label="TikTok Museum Listrik"><i
+                            class="fab fa-tiktok"></i></a>
+                    <a href="https://www.youtube.com/@MuseumListrikPLN" target="_blank"
+                        class="text-white text-lg hover-effect" aria-label="YouTube Museum Listrik"><i
+                            class="fab fa-youtube"></i></a>
+                </div>
+            </div>
+        </div>
+
+        <nav class="sticky top-0 z-50 shadow-lg" style="background: linear-gradient(to right, #00AFC1, #0D5C66);">
+            <div class="container mx-auto px-0.5 py-0.5 flex items-center justify-between">
+                <a href="/companyprofile.html" class="flex items-center gap-2 text-white font-bold text-xl">
+                    <img src="/mleb_foto/MLEB-logo.png" alt="Logo Museum Listrik dan Energi Baru Terbarukan"
+                        class="w-24 h-auto">
+                </a>
+
+                <button
+                    class="md:hidden p-2 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-white"
+                    id="navbar-toggler" aria-controls="mobile-nav-menu" aria-expanded="false"
+                    aria-label="Toggle navigation">
+                    <span class="line line-1 block"></span>
+                    <span class="line line-2 block"></span>
+                    <span class="line line-3 block"></span>
+                </button>
+
+                <div class="hidden md:flex flex-col md:flex-row md:items-center md:flex-1 w-full md:w-auto mt-4 md:mt-0"
+                    id="navbarNav">
+                    <ul class="flex flex-col md:flex-row md:ml-8 gap-3 md:gap-6 w-full md:w-auto">
+                        <li class="relative group">
+                            <a href="#"
+                                class="block py-2 px-3 text-white font-medium hover:text-yellow-300 transition duration-500">
+                                Beranda
+                            </a>
+                            <ul
+                                class="absolute bg-white text-gray-900 rounded-md shadow-lg py-2 mt-1 z-10 w-48 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 transform scale-95 group-hover:scale-100 origin-top-right">
+                                <li><a href="/index.html"
+                                        class="block py-2 px-4 hover:bg-gray-200 transition duration-200">HOME</a></li>
+                                <li><a href="/companyprofile.html"
+                                        class="block py-2 px-4 hover:bg-gray-200 transition duration-200">Tentang
+                                        Kami</a></li>
+                            </ul>
+                        </li>
+                        <li><a href="#news"
+                                class="block py-2 px-3 text-white font-medium hover:text-yellow-300 transition duration-500">News</a>
+                        </li>
+                        <li><a href="#events"
+                                class="block py-2 px-3 text-white font-medium hover:text-yellow-300 transition duration-500">Event</a>
+                        </li>
+                        <li><a href="/catalog.html"
+                                class="block py-2 px-3 text-white font-medium hover:text-yellow-300 transition duration-500">Katalog</a>
+                        </li>
+                    </ul>
+                </div>
+
+                <div
+                    class="flex flex-col md:flex-row items-center gap-4 md:gap-6 ml-auto mt-4 md:mt-0 w-full md:w-auto">
+                    <form class="flex w-full md:w-auto navbar-search-form" role="search">
+                        <input
+                            class="search-input py-2 px-4 rounded-full mr-2 outline-none focus:ring-2 focus:ring-white focus:border-transparent w-full md:w-48"
+                            type="search" placeholder="Cari..." aria-label="Search">
+                        <button
+                            class="bg-white text-[#0D5C66] px-4 py-2 rounded-full font-semibold hover:bg-gray-200 transition duration-200 flex-shrink-0"
+                            type="submit">Cari</button>
+                    </form>
+
+                    <div class="relative group">
+                        <button
+                            class="flex items-center gap-2 text-white font-medium px-3 py-2 rounded-md hover:bg-white/10 transition duration-200"
+                            type="button" aria-expanded="false" aria-haspopup="true">
+                            <i class="fas fa-user-circle text-xl"></i> Profil
+                        </button>
+                        <ul
+                            class="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-10 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 transform scale-95 group-hover:scale-100 origin-top-right">
+                            <li><a class="block px-4 py-2 text-gray-800 hover:bg-gray-100"
+                                    href="/dashboardUser.html">Dashboard</a></li>
+                            <li><a class="block px-4 py-2 text-gray-800 hover:bg-gray-100" href="/login.html">Login</a>
+                            </li>
+                            <li>
+                                <hr class="border-t border-gray-200 my-1">
+                            </li>
+                            <li><a class="block px-4 py-2 text-red-600 hover:bg-gray-100" href="#">Keluar</a></li>
+                        </ul>
+                    </div>
+
+                    <a href="https://web.pln.co.id/" target="_blank"
+                        class="flex items-center gap-2 text-white font-medium px-3 py-2 rounded-md hover:bg-white/10 transition duration-200">
+                        <img src="/mleb_foto/logo-pln-removebg-preview.png" alt="Logo PLN" class="w-20 h-auto">
+                    </a>
+                </div>
+            </div>
+        </nav>
+
+        <div class="flex flex-1">
+            <aside class="w-64 bg-gray-800 text-white p-6 shadow-2xl hidden md:block">
+                <div class="text-2xl font-bold mb-8 text-[#00AFC1]">Admin Panel</div>
+                <ul class="space-y-4">
+                    <li><a href="#"
+                            class="sidebar-item flex items-center py-3 px-4 rounded-xl text-gray-300 hover:bg-gray-700 transition duration-200 sidebar-item-active"
+                            data-page="ringkasan"><i class="fas fa-chart-bar mr-4"></i> Ringkasan</a></li>
+                    <li><a href="#"
+                            class="sidebar-item flex items-center py-3 px-4 rounded-xl text-gray-300 hover:bg-gray-700 transition duration-200"
+                            data-page="manajemen-acara"><i class="fas fa-calendar-alt mr-4"></i> Manajemen Acara</a>
+                    </li>
+                    <li><a href="#"
+                            class="sidebar-item flex items-center py-3 px-4 rounded-xl text-gray-300 hover:bg-gray-700 transition duration-200"
+                            data-page="data-pengunjung"><i class="fas fa-users mr-4"></i> Data Pengunjung</a></li>
+                    <li><a href="#"
+                            class="sidebar-item flex items-center py-3 px-4 rounded-xl text-gray-300 hover:bg-gray-700 transition duration-200"
+                            data-page="manajemen-koleksi"><i class="fas fa-box-open mr-4"></i> Manajemen Koleksi</a>
+                    </li>
+                    <li><a href="#"
+                            class="sidebar-item flex items-center py-3 px-4 rounded-xl text-gray-300 hover:bg-gray-700 transition duration-200"
+                            data-page="manajemen-ulasan"><i class="fas fa-comments mr-4"></i> Manajemen Ulasan</a></li>
+                    <li><a href="#"
+                            class="sidebar-item flex items-center py-3 px-4 rounded-xl text-gray-300 hover:bg-gray-700 transition duration-200"
+                            data-page="galeri-pengunjung"><i class="fas fa-images mr-4"></i> Galeri Pengunjung</a></li>
+                    <li><a href="#"
+                            class="sidebar-item flex items-center py-3 px-4 rounded-xl text-gray-300 hover:bg-gray-700 transition duration-200"
+                            data-page="pengaturan"><i class="fas fa-cog mr-4"></i> Pengaturan</a></li>
+                    <li class="mt-8"><a href="#"
+                            class="flex items-center py-3 px-4 rounded-xl text-red-400 hover:bg-gray-700 transition duration-200"><i
+                                class="fas fa-sign-out-alt mr-4"></i> Keluar</a></li>
+                </ul>
+            </aside>
+
+            <main class="flex-1 p-8">
+
+                <div id="ringkasan" class="page-content active">
+                    <h1 class="text-4xl font-extrabold text-gray-800 mb-8">Ringkasan Admin 👋</h1>
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
+                        <div
+                            class="bg-white p-6 rounded-xl shadow-md border-l-4 border-blue-500 hover:shadow-lg transition-shadow">
+                            <div class="flex justify-between items-center">
+                                <div>
+                                    <p class="text-sm text-gray-500 font-semibold">Pengunjung Hari Ini</p>
+                                    <p class="text-3xl font-bold mt-1">150</p>
+                                </div><i class="fas fa-users text-blue-500 text-3xl"></i>
+                            </div>
+                        </div>
+                        <div
+                            class="bg-white p-6 rounded-xl shadow-md border-l-4 border-purple-500 hover:shadow-lg transition-shadow">
+                            <div class="flex justify-between items-center">
+                                <div>
+                                    <p class="text-sm text-gray-500 font-semibold">Ulasan Baru</p>
+                                    <p class="text-3xl font-bold mt-1">8</p>
+                                </div><i class="fas fa-comments text-purple-500 text-3xl"></i>
+                            </div>
+                        </div>
+                        <div
+                            class="bg-white p-6 rounded-xl shadow-md border-l-4 border-teal-500 hover:shadow-lg transition-shadow">
+                            <div class="flex justify-between items-center">
+                                <div>
+                                    <p class="text-sm text-gray-500 font-semibold">Total Koleksi</p>
+                                    <p class="text-3xl font-bold mt-1">1.234</p>
+                                </div><i class="fas fa-box-open text-teal-500 text-3xl"></i>
+                            </div>
+                        </div>
+                        <div
+                            class="bg-white p-6 rounded-xl shadow-md border-l-4 border-pink-500 hover:shadow-lg transition-shadow">
+                            <div class="flex justify-between items-center">
+                                <div>
+                                    <p class="text-sm text-gray-500 font-semibold">Rating Rata-Rata</p>
+                                    <p class="text-3xl font-bold mt-1">4.8 <span class="text-yellow-400 text-xl"><i
+                                                class="fas fa-star"></i></span></p>
+                                </div><i class="fas fa-star-half-alt text-pink-500 text-3xl"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+                        <div class="bg-white p-6 rounded-xl shadow-md">
+                            <h2 class="text-xl font-bold text-gray-800 mb-4">Pengunjung Bulanan</h2>
+                            <canvas id="monthlyVisitorsChart" class="h-64"></canvas>
+                        </div>
+                        <div class="bg-white p-6 rounded-xl shadow-md">
+                            <h2 class="text-xl font-bold text-gray-800 mb-4">Analisis Demografi</h2>
+                            <div class="h-64 flex items-center justify-center">
+                                <canvas id="demographicsChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="manajemen-acara" class="page-content">
+                    <h1 class="text-4xl font-extrabold text-gray-800 mb-8">Manajemen Acara</h1>
+                    <div class="bg-white p-6 rounded-xl shadow-md">
+                        <div class="flex justify-between items-center mb-4">
+                            <h2 class="text-xl font-bold text-gray-800">Daftar Acara Mendatang</h2>
+                            <button
+                                class="bg-[#00AFC1] text-white px-4 py-2 rounded-lg font-semibold hover:bg-[#0D5C66] transition"><i
+                                    class="fas fa-plus mr-2"></i> Tambah Acara Baru</button>
+                        </div>
+                        <div class="table-responsive">
+                            <table class="min-w-full divide-y divide-gray-200">
+                                <thead>
+                                    <tr>
+                                        <th
+                                            class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                            Nama Acara</th>
+                                        <th
+                                            class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                            Tanggal</th>
+                                        <th
+                                            class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                            Waktu</th>
+                                        <th
+                                            class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                            Status</th>
+                                        <th
+                                            class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                            Aksi</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="bg-white divide-y divide-gray-200">
+                                    <tr>
+                                        <td class="px-6 py-4 whitespace-nowrap font-medium text-gray-900">Pameran Energi
+                                            Masa Depan</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-gray-500">20 Oktober 2025</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-gray-500">10:00 - 15:00 WIB</td>
+                                        <td class="px-6 py-4 whitespace-nowrap"><span
+                                                class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">Aktif</span>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                                            <button class="text-blue-600 hover:text-blue-900 mr-2">Edit</button>
+                                            <button class="text-red-600 hover:text-red-900">Hapus</button>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="px-6 py-4 whitespace-nowrap font-medium text-gray-900">Workshop
+                                            Listrik Tenaga Surya</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-gray-500">15 November 2025</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-gray-500">13:00 - 16:00 WIB</td>
+                                        <td class="px-6 py-4 whitespace-nowrap"><span
+                                                class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-800">Draft</span>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                                            <button class="text-blue-600 hover:text-blue-900 mr-2">Edit</button>
+                                            <button class="text-red-600 hover:text-red-900">Hapus</button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="data-pengunjung" class="page-content">
+                    <h1 class="text-4xl font-extrabold text-gray-800 mb-8">Data Pengunjung</h1>
+                    <div class="bg-white p-6 rounded-xl shadow-md">
+                        <div class="flex justify-between items-center mb-4">
+                            <h2 class="text-xl font-bold text-gray-800">Daftar Pengunjung Terbaru</h2>
+                            <button
+                                class="bg-gray-200 text-gray-800 px-4 py-2 rounded-lg font-semibold hover:bg-gray-300 transition">Download
+                                CSV</button>
+                        </div>
+                        <div class="table-responsive">
+                            <table class="min-w-full divide-y divide-gray-200">
+                                <thead>
+                                    <tr>
+                                        <th
+                                            class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                            ID</th>
+                                        <th
+                                            class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                            Nama</th>
+                                        <th
+                                            class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                            Tanggal Kunjungan</th>
+                                        <th
+                                            class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                            Tiket</th>
+                                        <th
+                                            class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                            Aksi</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="bg-white divide-y divide-gray-200">
+                                    <tr>
+                                        <td class="px-6 py-4 whitespace-nowrap text-gray-500">MLPN1001</td>
+                                        <td class="px-6 py-4 whitespace-nowrap font-medium text-gray-900">Joko Santoso
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-gray-500">12 Agt 2025</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-gray-500">Dewasa</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium"><button
+                                                class="text-blue-600 hover:text-blue-900">Lihat</button></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="px-6 py-4 whitespace-nowrap text-gray-500">MLPN1002</td>
+                                        <td class="px-6 py-4 whitespace-nowrap font-medium text-gray-900">Siti Aisyah
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-gray-500">11 Agt 2025</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-gray-500">Anak-Anak</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium"><button
+                                                class="text-blue-600 hover:text-blue-900">Lihat</button></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="manajemen-koleksi" class="page-content">
+                    <h1 class="text-4xl font-extrabold text-gray-800 mb-8">Manajemen Koleksi</h1>
+                    <div class="flex justify-end mb-4">
+                        <button
+                            class="bg-[#00AFC1] text-white px-4 py-2 rounded-lg font-semibold hover:bg-[#0D5C66] transition"><i
+                                class="fas fa-plus mr-2"></i> Tambah Koleksi Baru</button>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        <div class="bg-white p-6 rounded-xl shadow-md flex flex-col">
+                            <img src="https://via.placeholder.com/400x250?text=Lampu+Pijar+Pertama"
+                                alt="Lampu Pijar Pertama" class="rounded-lg mb-4">
+                            <h3 class="text-xl font-bold text-gray-800 mb-2">Lampu Pijar Pertama</h3>
+                            <p class="text-gray-600 flex-grow">Deskripsi singkat tentang lampu pijar pertama...</p>
+                            <div class="mt-4 flex gap-2">
+                                <button
+                                    class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition">Edit</button>
+                                <button
+                                    class="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition">Hapus</button>
+                            </div>
+                        </div>
+                        <div class="bg-white p-6 rounded-xl shadow-md flex flex-col">
+                            <img src="https://via.placeholder.com/400x250?text=Generator+Turbin+Uap"
+                                alt="Generator Turbin Uap" class="rounded-lg mb-4">
+                            <h3 class="text-xl font-bold text-gray-800 mb-2">Generator Turbin Uap</h3>
+                            <p class="text-gray-600 flex-grow">Deskripsi singkat tentang generator turbin uap...</p>
+                            <div class="mt-4 flex gap-2">
+                                <button
+                                    class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition">Edit</button>
+                                <button
+                                    class="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition">Hapus</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="manajemen-ulasan" class="page-content">
+                    <h1 class="text-4xl font-extrabold text-gray-800 mb-8">Manajemen Ulasan</h1>
+                    <div class="bg-white p-6 rounded-xl shadow-md">
+                        <div class="flex justify-between items-center mb-4">
+                            <h2 class="text-xl font-bold text-gray-800">Ulasan yang Belum Dimoderasi</h2>
+                        </div>
+                        <div class="table-responsive">
+                            <table class="min-w-full divide-y divide-gray-200">
+                                <thead>
+                                    <tr>
+                                        <th
+                                            class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                            Pengguna</th>
+                                        <th
+                                            class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                            Ulasan</th>
+                                        <th
+                                            class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                            Rating</th>
+                                        <th
+                                            class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                            Tanggal</th>
+                                        <th
+                                            class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                            Aksi</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="bg-white divide-y divide-gray-200">
+                                    <tr>
+                                        <td class="px-6 py-4 whitespace-nowrap">Ana</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-gray-500">Pengalaman yang sangat
+                                            edukatif!</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-yellow-400"><i
+                                                class="fas fa-star"></i><i class="fas fa-star"></i><i
+                                                class="fas fa-star"></i><i class="fas fa-star"></i><i
+                                                class="fas fa-star"></i></td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-gray-500">12 Agt 2025</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                                            <button class="text-green-600 hover:text-green-900 mr-2"
+                                                onclick="approveReview('Ana')"><i class="fas fa-check"></i>
+                                                Setujui</button>
+                                            <button class="text-red-600 hover:text-red-900"
+                                                onclick="deleteReview('Ana')"><i class="fas fa-times"></i>
+                                                Hapus</button>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="px-6 py-4 whitespace-nowrap">Budi</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-gray-500">Kurang spot foto, tapi
+                                            koleksinya keren.</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-yellow-400"><i
+                                                class="fas fa-star"></i><i class="fas fa-star"></i><i
+                                                class="fas fa-star"></i><i class="fas fa-star"></i><i
+                                                class="far fa-star"></i></td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-gray-500">11 Agt 2025</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                                            <button class="text-green-600 hover:text-green-900 mr-2"
+                                                onclick="approveReview('Budi')"><i class="fas fa-check"></i>
+                                                Setujui</button>
+                                            <button class="text-red-600 hover:text-red-900"
+                                                onclick="deleteReview('Budi')"><i class="fas fa-times"></i>
+                                                Hapus</button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="galeri-pengunjung" class="page-content">
+                    <h1 class="text-4xl font-extrabold text-gray-800 mb-8">Galeri Pengunjung</h1>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+                        <div class="bg-white rounded-xl shadow-md overflow-hidden">
+                            <img src="https://via.placeholder.com/400x300?text=Foto+1" alt="Foto Pengunjung"
+                                class="w-full h-48 object-cover">
+                            <div class="p-4">
+                                <p class="text-sm text-gray-600">Diunggah oleh: **Siti**</p>
+                                <p class="text-sm text-gray-400">12 Agt 2025</p>
+                                <div class="mt-4 flex gap-2">
+                                    <button
+                                        class="bg-green-600 text-white px-3 py-1 rounded-lg text-sm hover:bg-green-700 transition"
+                                        onclick="approvePhoto('Siti')">Setujui</button>
+                                    <button
+                                        class="bg-red-600 text-white px-3 py-1 rounded-lg text-sm hover:bg-red-700 transition"
+                                        onclick="deletePhoto('Siti')">Tolak</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="bg-white rounded-xl shadow-md overflow-hidden">
+                            <img src="https://via.placeholder.com/400x300?text=Foto+2" alt="Foto Pengunjung"
+                                class="w-full h-48 object-cover">
+                            <div class="p-4">
+                                <p class="text-sm text-gray-600">Diunggah oleh: **Ahmad**</p>
+                                <p class="text-sm text-gray-400">11 Agt 2025</p>
+                                <div class="mt-4 flex gap-2">
+                                    <button
+                                        class="bg-green-600 text-white px-3 py-1 rounded-lg text-sm hover:bg-green-700 transition"
+                                        onclick="approvePhoto('Ahmad')">Setujui</button>
+                                    <button
+                                        class="bg-red-600 text-white px-3 py-1 rounded-lg text-sm hover:bg-red-700 transition"
+                                        onclick="deletePhoto('Ahmad')">Tolak</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="pengaturan" class="page-content">
+                    <h1 class="text-4xl font-extrabold text-gray-800 mb-8">Pengaturan Website</h1>
+                    <div class="bg-white p-6 rounded-xl shadow-md">
+                        <h2 class="text-xl font-bold text-gray-800 mb-4">Informasi Dasar</h2>
+                        <form>
+                            <div class="mb-4">
+                                <label class="block text-gray-700 text-sm font-bold mb-2" for="site-name">Nama
+                                    Website</label>
+                                <input
+                                    class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                                    id="site-name" type="text" placeholder="Museum Listrik PLN">
+                            </div>
+                            <div class="mb-4">
+                                <label class="block text-gray-700 text-sm font-bold mb-2" for="email-contact">Email
+                                    Kontak</label>
+                                <input
+                                    class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                                    id="email-contact" type="email" placeholder="museumlistrikpln@gmail.com">
+                            </div>
+                            <div class="mb-4">
+                                <label class="block text-gray-700 text-sm font-bold mb-2" for="phone-contact">Nomor
+                                    Telepon</label>
+                                <input
+                                    class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                                    id="phone-contact" type="tel" placeholder="+62 812-3456-7890">
+                            </div>
+                            <div class="flex items-center justify-between">
+                                <button
+                                    class="bg-[#00AFC1] text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline hover:bg-[#0D5C66] transition"
+                                    type="button">
+                                    Simpan Perubahan
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </main>
+        </div>
+
+        <script>
+            const navbarToggler = document.getElementById('navbar-toggler');
+            const navbarNav = document.getElementById('navbarNav');
+            const sidebarItems = document.querySelectorAll('.sidebar-item');
+            const pageContents = document.querySelectorAll('.page-content');
+
+            navbarToggler.addEventListener('click', () => {
+                const isExpanded = navbarToggler.getAttribute('aria-expanded') === 'true' || false;
+                navbarToggler.setAttribute('aria-expanded', !isExpanded);
+                navbarToggler.classList.toggle('open');
+                navbarNav.classList.toggle('hidden');
+                navbarNav.classList.toggle('flex');
+            });
+
+            // Function to show the selected page and update sidebar active state
+            function showPage(pageId) {
+                pageContents.forEach(page => {
+                    page.classList.remove('active');
+                });
+                document.getElementById(pageId).classList.add('active');
+
+                sidebarItems.forEach(item => {
+                    item.classList.remove('sidebar-item-active');
+                    if (item.dataset.page === pageId) {
+                        item.classList.add('sidebar-item-active');
+                    }
+                });
+            }
+
+            sidebarItems.forEach(item => {
+                item.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    const pageId = item.dataset.page;
+                    showPage(pageId);
+                });
+            });
+
+            // Initial chart rendering
+            document.addEventListener('DOMContentLoaded', () => {
+                renderCharts();
+            });
+
+            // Function to render charts on the 'ringkasan' page
+            function renderCharts() {
+                const monthlyVisitorsChart = document.getElementById('monthlyVisitorsChart');
+                const demographicsChart = document.getElementById('demographicsChart');
+
+                if (monthlyVisitorsChart && demographicsChart) {
+                    new Chart(monthlyVisitorsChart.getContext('2d'), {
+                        type: 'bar',
+                        data: {
+                            labels: ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agt'],
+                            datasets: [{
+                                label: 'Jumlah Pengunjung',
+                                data: [1200, 1900, 3000, 2500, 2200, 3500, 2800, 4100],
+                                backgroundColor: '#00AFC1',
+                                borderColor: '#00AFC1',
+                                borderWidth: 1
+                            }]
+                        },
+                        options: { responsive: true, scales: { y: { beginAtZero: true } } }
+                    });
+
+                    new Chart(demographicsChart.getContext('2d'), {
+                        type: 'pie',
+                        data: {
+                            labels: ['15-25 Tahun', '26-40 Tahun', '41-60 Tahun', '> 60 Tahun'],
+                            datasets: [{
+                                data: [45, 30, 20, 5],
+                                backgroundColor: ['#00AFC1', '#0D5C66', '#fcd34d', '#ef4444'],
+                                hoverOffset: 4
+                            }]
+                        },
+                        options: { responsive: true, plugins: { legend: { position: 'right' } } }
+                    });
+                }
+            }
+
+            // Contoh fungsi untuk simulasi aksi (diperlukan backend untuk fungsi real)
+            function approveReview(user) {
+                alert(`Menyetujui ulasan dari ${user}.`);
+                // Di sini akan ada kode untuk mengirim permintaan ke server
+            }
+
+            function deleteReview(user) {
+                if (confirm(`Apakah Anda yakin ingin menghapus ulasan dari ${user}?`)) {
+                    alert(`Ulasan dari ${user} dihapus.`);
+                    // Di sini akan ada kode untuk mengirim permintaan ke server
+                }
+            }
+
+            function approvePhoto(user) {
+                alert(`Menyetujui foto dari ${user}.`);
+                // Kode untuk backend
+            }
+
+            function deletePhoto(user) {
+                if (confirm(`Apakah Anda yakin ingin menolak foto dari ${user}?`)) {
+                    alert(`Foto dari ${user} ditolak.`);
+                    // Kode untuk backend
+                }
+            }
+        </script>
+    </body>
+
+</html>
